@@ -1,12 +1,14 @@
 ---
 name: panews
-description: Query the public PANews API for structured article search, listings, rankings, and daily must-reads. Use panews-web-viewer instead when the user wants the rendered website page as Markdown.
+description: Query the public PANews API for the currently bundled read-only workflows: article search, listings, rankings, and daily must-reads. Use panews-web-viewer instead when the user wants the rendered website page as Markdown.
 metadata:
   author: Seven Du
   version: "2026.03.16"
 ---
 
 Public read-only PANews content via `https://universal-api.panewslab.com`. Set the `PA-Accept-Language` request header to localize responses.
+
+Current first-class support in this skill is limited to the bundled scripts below. Other public endpoints may appear in references as HTTP notes, but they are not part of the default supported workflow unless scripts are added later.
 
 ## When to Use
 
@@ -50,6 +52,7 @@ PANews Read Progress:
 - Default article types `NORMAL,NEWS`; add `VIDEO` only when the user explicitly asks
 - This skill is read-only — for article creation and publishing use `panews-creator`
 - Prefer bundled scripts before falling back to ad hoc HTTP requests
+- Treat reference-only endpoints as optional HTTP notes, not as default supported workflows
 
 ## Failure Handling
 
@@ -73,4 +76,4 @@ node {Skills Directory}/panews/scripts/get-rankings.mjs [--weekly] [--lang zh]
 | ----- | ----------- | --------- |
 | Workflows | Task routing, defaults, and empty-result handling | [workflows](references/workflows.md) |
 | Articles | Search, list, detail, related articles, and rankings | [articles](references/articles.md) |
-| Content | Daily must-reads and adjacent public endpoints | [content](references/content.md) |
+| Content | Daily must-reads plus reference-only notes for adjacent public endpoints | [content](references/content.md) |

@@ -8,6 +8,8 @@ metadata:
 
 Fetches `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`). Use `panews` instead for structured API queries or search.
 
+Current first-class support in this skill is single-page fetching through the bundled script below. It is intended for homepage, article-page, and column-page reads, not broad site crawling.
+
 ## When to Use
 
 - The user provides or implies a PANews web URL

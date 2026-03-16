@@ -1,6 +1,6 @@
 ---
 name: workflows
-description: Common PANews read-only task routes and defaults. Use to choose the right bundled script or direct endpoint quickly.
+description: Common PANews read-only task routes and defaults. Use to choose the right bundled script quickly.
 ---
 
 # PANews Workflows
@@ -10,6 +10,7 @@ description: Common PANews read-only task routes and defaults. Use to choose the
 1. If the user wants structured JSON data, use this skill.
 2. If the user wants the rendered website page as Markdown, use `panews-web-viewer`.
 3. If the user wants to publish or manage creator content, use `panews-creator`.
+4. If the task depends on a reference-only endpoint, treat it as an exception path rather than the default workflow.
 
 ## Common Tasks
 
@@ -39,6 +40,11 @@ description: Common PANews read-only task routes and defaults. Use to choose the
 - Locale: `zh` unless the user asks for another language
 - Search result types: `NORMAL,NEWS`
 - Page size: keep bundled script defaults unless the user asks for more
+
+## Reference-Only Endpoints
+
+- `columns`, `tags`, `crypto`, `events`, and `calendar` are not part of the main bundled workflow in the current skill version
+- If one of these becomes a repeated task, add a script before promoting it into the primary skill surface
 
 ## Empty or Missing Results
 
