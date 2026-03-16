@@ -7,7 +7,8 @@
  *
  * Options:
  *   --mode hit|time     Ranking mode (default: hit)
- *   --types <list>      Comma-separated: NORMAL,NEWS,VIDEO (default: NORMAL,NEWS)
+ *   --type <list>       Comma-separated: NORMAL,NEWS,VIDEO (default: NORMAL,NEWS)
+ *   --types <list>      Deprecated alias for --type
  *   --take <n>          Page size (default: 10)
  *   --skip <n>          Page offset (default: 0)
  *   --lang <lang>       zh | zh-hant | en | ja | ko (default: zh)
@@ -31,14 +32,17 @@ for (let i = 0; i < args.length; i++) {
 const query = positional.join(" ");
 if (!query) {
   console.error(
-    "Usage: node search-articles.mjs <query> [--mode hit|time] [--types NORMAL,NEWS] [--take 10] [--skip 0] [--lang zh]",
+    "Usage: node search-articles.mjs <query> [--mode hit|time] [--type NORMAL,NEWS] [--take 10] [--skip 0] [--lang zh]",
   );
   process.exit(1);
 }
 
 const lang = flags.lang ?? "zh";
 const mode = flags.mode ?? "hit";
-const types = (flags.types ?? "NORMAL,NEWS").split(",");
+const type = (flags.type ?? flags.types ?? "NORMAL,NEWS")
+  .split(",")
+  .map(item => item.trim())
+  .filter(Boolean);
 const take = Number(flags.take ?? 10);
 const skip = Number(flags.skip ?? 0);
 
@@ -48,7 +52,7 @@ const res = await fetch(`${BASE_URL}/search/articles`, {
     "Content-Type": "application/json",
     "PA-Accept-Language": lang,
   },
-  body: JSON.stringify({ query, mode, types, take, skip }),
+  body: JSON.stringify({ query, mode, type, take, skip }),
 });
 
 if (!res.ok) {

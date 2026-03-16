@@ -22,13 +22,13 @@ Public read-only PANews content via `https://universal-api.panewslab.com`. Set t
 
 - Always use `POST /search/articles` for keyword search — never `GET /articles?search=...`
 - Default `mode=hit`; use `mode=time` only when the user explicitly wants newest results
-- Default types `NORMAL,NEWS`; add `VIDEO` only when the user explicitly asks
+- Default article types `NORMAL,NEWS`; add `VIDEO` only when the user explicitly asks
 - This skill is read-only — for article creation and publishing use `panews-creator`
 
 ## Scripts
 
 ```bash
-node {Skills Directory}/panews/scripts/search-articles.mjs <query> [--mode hit|time] [--types NORMAL,NEWS] [--take 10] [--skip 0] [--lang zh]
+node {Skills Directory}/panews/scripts/search-articles.mjs <query> [--mode hit|time] [--type NORMAL,NEWS] [--take 10] [--skip 0] [--lang zh]
 node {Skills Directory}/panews/scripts/list-articles.mjs [--type NORMAL|NEWS|VIDEO] [--column-id <id>] [--tag-id <id>] [--author-id <id>] [--is-featured] [--take 10] [--skip 0] [--lang zh]
 node {Skills Directory}/panews/scripts/get-article.mjs <articleId> [--related] [--lang zh]
 node {Skills Directory}/panews/scripts/get-daily-must-reads.mjs [--date YYYY-MM-DD] [--special] [--lang zh]

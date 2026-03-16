@@ -37,7 +37,7 @@ node {Skills Directory}/panews-creator/scripts/get-creator-context.mjs [--sessio
 node {Skills Directory}/panews-creator/scripts/upload-image.mjs <file-path> [--watermark] [--session <value>]
 node {Skills Directory}/panews-creator/scripts/apply-column.mjs --name <name> --desc <desc> --picture <url> --links <url,...> [--session <value>]
 node {Skills Directory}/panews-creator/scripts/apply-column.mjs --column-id <id> [--name] [--desc] [--picture] [--links] [--session <value>]
-node {Skills Directory}/panews-creator/scripts/search-tags.mjs <keyword> [--take 20] [--lang zh]
+node {Skills Directory}/panews-creator/scripts/search-tags.mjs <keyword> [--take 20] [--skip 0] [--lang zh]
 node {Skills Directory}/panews-creator/scripts/list-articles.mjs --column-id <id> [--status DRAFT|PENDING|PUBLISHED|REJECTED] [--take 20] [--skip 0] [--session <value>]
 node {Skills Directory}/panews-creator/scripts/create-article.mjs --column-id <id> --lang <lang> --title <title> --desc <desc> --content-file <path> [--status DRAFT|PENDING] [--cover <url>] [--tags <id,...>] [--session <value>]
 node {Skills Directory}/panews-creator/scripts/update-article.mjs --column-id <id> --article-id <id> [fields...] [--session <value>]

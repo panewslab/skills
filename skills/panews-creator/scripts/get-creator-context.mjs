@@ -31,6 +31,11 @@ const session = flags.session
   ?? process.env.PA_USER_SESSION
   ?? process.env.PA_USER_SESSION_ID
 
+const normalizeStatus = (value) => {
+  if (typeof value !== 'string' || value.length === 0) return null
+  return value.toLowerCase()
+}
+
 if (!session) {
   console.error('No session found. Provide --session or set PANEWS_USER_SESSION env var.')
   process.exit(1)
@@ -51,18 +56,36 @@ if (!userRes.ok) {
 const user = await userRes.json()
 
 // 2. Get columns owned by this user
-const columnsRes = await fetch(`${BASE_URL}/columns?authorId=${user.id}&take=100`, { headers })
+const params = new URLSearchParams({ authorId: user.id, take: '100' })
+const columnsRes = await fetch(`${BASE_URL}/columns?${params}`, { headers })
 const columnsData = columnsRes.ok ? await columnsRes.json() : { items: [] }
-const columns = columnsData.items ?? columnsData ?? []
+const allColumns = columnsData.items ?? columnsData ?? []
+const approvedColumns = allColumns.filter(column => column.status === 'APPROVED')
 
-// 3. Get latest column application status (from the first column if any)
+// 3. Infer application status from approved columns or the latest application record.
 let applicationStatus = 'none'
-if (columns.length > 0) {
-  const appRes = await fetch(`${BASE_URL}/columns/${columns[0].id}/application-from`, { headers })
-  if (appRes.ok) {
+if (approvedColumns.length > 0) {
+  applicationStatus = 'approved'
+}
+else if (allColumns.length > 0) {
+  const latestColumns = [...allColumns].sort((left, right) => {
+    const leftTime = Date.parse(left.updatedAt ?? left.createdAt ?? 0)
+    const rightTime = Date.parse(right.updatedAt ?? right.createdAt ?? 0)
+    return rightTime - leftTime
+  })
+
+  for (const column of latestColumns) {
+    const appRes = await fetch(`${BASE_URL}/columns/${column.id}/application-from`, { headers })
+    if (!appRes.ok) continue
+
     const app = await appRes.json()
-    applicationStatus = app.status ?? 'approved'
+    applicationStatus = normalizeStatus(app.status) ?? normalizeStatus(column.status) ?? 'none'
+    break
+  }
+
+  if (applicationStatus === 'none') {
+    applicationStatus = normalizeStatus(latestColumns[0].status) ?? 'none'
   }
 }
 
-console.log(JSON.stringify({ user, columns, applicationStatus }, null, 2))
+console.log(JSON.stringify({ user, columns: approvedColumns, applicationStatus }, null, 2))

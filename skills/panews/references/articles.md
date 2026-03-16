@@ -15,7 +15,7 @@ Base URL: `https://universal-api.panewslab.com`
 {
   "query": "Bitcoin",
   "mode": "hit",
-  "types": ["NORMAL", "NEWS"],
+  "type": ["NORMAL", "NEWS"],
   "take": 10,
   "skip": 0
 }
@@ -24,7 +24,7 @@ Base URL: `https://universal-api.panewslab.com`
 | Field | Default | Notes |
 | ----- | ------- | ----- |
 | `mode` | `hit` | `hit` = relevance + time decay; `time` = newest first |
-| `types` | `["NORMAL","NEWS"]` | Add `"VIDEO"` only when user explicitly asks |
+| `type` | `["NORMAL","NEWS"]` | Add `"VIDEO"` only when user explicitly asks |
 
 ## List
 
