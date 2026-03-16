@@ -12,23 +12,28 @@ Always write article content in **Markdown**, then render it to HTML before subm
 The `--content-file` parameter accepts an HTML file. Workflow:
 
 1. Write content in Markdown
-2. Render Markdown → HTML with `scripts/render-markdown.mjs` (`npx md4x` under the hood)
+2. Render Markdown → HTML with a Markdown CLI such as `md4x`
 3. Save the HTML to a temporary file
 4. Pass the file path to `--content-file`
 
 Never write raw HTML manually.
 
-## Example
-
-```bash
-node {Skills Directory}/panews-creator/scripts/render-markdown.mjs draft.md --output draft.html
-node {Skills Directory}/panews-creator/scripts/create-article.mjs --column-id <id> --lang zh --title "..." --desc "..." --content-file draft.html --status DRAFT
-```
-
-Equivalent direct CLI call:
+## Conversion Commands
 
 ```bash
 npx --yes md4x draft.md -t html -o draft.html
+```
+
+```bash
+bunx md4x draft.md -t html -o draft.html
+```
+
+Pick the runner that exists in the current environment. Do not assume `npx` is always available.
+
+## Example
+
+```bash
+node {Skills Directory}/panews-creator/scripts/create-article.mjs --column-id <id> --lang zh --title "..." --desc "..." --content-file draft.html --status DRAFT
 ```
 
 ## Markdown Guidelines

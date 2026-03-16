@@ -35,7 +35,7 @@ Authenticated creator workflow via `https://universal-api.panewslab.com`. All en
 1. Validate session → `get-current-user`
 2. Get full context → `get-creator-context`
 3. No approved column → run column application flow (`apply-column`)
-4. Has approved column → search tags (`GET /tags`) → render Markdown to HTML → execute article operations
+4. Has approved column → search tags (`GET /tags`) → convert Markdown to HTML → execute article operations
 
 Copy this checklist and work through it:
 
@@ -45,7 +45,7 @@ PANews Creator Progress:
 - [ ] Step 2: Inspect creator context and approved columns
 - [ ] Step 3: If needed, complete or resubmit the column application
 - [ ] Step 4: Upload assets and gather tag IDs
-- [ ] Step 5: Render Markdown to HTML
+- [ ] Step 5: Convert Markdown to HTML with the available package runner
 - [ ] Step 6: Create or update the article
 - [ ] Step 7: Verify the API response before finishing
 ```
@@ -57,7 +57,7 @@ Resolve `PA-User-Session` from environment in order: `PANEWS_USER_SESSION` → `
 ## Rules
 
 - Validate the session before any mutating action
-- Never hand-write raw HTML article bodies; render Markdown with the bundled helper first
+- Never hand-write raw HTML article bodies; convert Markdown with a tool such as `md4x` first
 - Treat `401` as a hard stop: discard the session and re-resolve it
 - Only publish to `PENDING` when the user is ready to submit for review; otherwise default to `DRAFT`
 
@@ -66,7 +66,6 @@ Resolve `PA-User-Session` from environment in order: `PANEWS_USER_SESSION` → `
 ```bash
 node {Skills Directory}/panews-creator/scripts/get-current-user.mjs [--session <value>]
 node {Skills Directory}/panews-creator/scripts/get-creator-context.mjs [--session <value>]
-node {Skills Directory}/panews-creator/scripts/render-markdown.mjs <input.md> [--output <path>]
 node {Skills Directory}/panews-creator/scripts/upload-image.mjs <file-path> [--watermark] [--session <value>]
 node {Skills Directory}/panews-creator/scripts/apply-column.mjs --name <name> --desc <desc> --picture <url> --links <url,...> [--session <value>]
 node {Skills Directory}/panews-creator/scripts/apply-column.mjs --column-id <id> [--name] [--desc] [--picture] [--links] [--session <value>]

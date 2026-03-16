@@ -49,7 +49,7 @@ These are **column-owner** routes, not admin routes.
 Recommended flow:
 
 1. Write the article in Markdown
-2. Render it with `scripts/render-markdown.mjs`
+2. Convert it to HTML with `md4x` using the package runner available in the environment
 3. Upload any local images first if they need PANews CDN URLs
 4. Submit with `--content-file`
 
