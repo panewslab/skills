@@ -17,7 +17,7 @@ npx skills add panewslab/skills
 | Skill                                                  | Description                                                                             |
 | ------------------------------------------------------ | --------------------------------------------------------------------------------------- |
 | [panews](skills/panews/SKILL.md)                       | Query the public PANews API for the currently bundled read-only workflows: article search, listings, rankings, and daily must-reads |
-| [panews-creator](skills/panews-creator/SKILL.md)       | PANews creator workflow — authenticate, manage columns, upload images, publish articles |
+| [panews-creator](skills/panews-creator/SKILL.md)       | PANews creator workflow — authenticate, manage columns, upload images, and create or submit articles |
 | [panews-web-viewer](skills/panews-web-viewer/SKILL.md) | Read public PANews website pages as Markdown                                            |
 
 ## Choosing a Skill
@@ -26,7 +26,7 @@ npx skills add panewslab/skills
 | ---- | --- |
 | Search articles, list article feeds, fetch rankings, or get daily must-reads as JSON | [panews](skills/panews/SKILL.md) |
 | Read the rendered website page, article body, or column page as Markdown | [panews-web-viewer](skills/panews-web-viewer/SKILL.md) |
-| Validate a creator session, apply for a column, upload assets, or create/update/delete articles | [panews-creator](skills/panews-creator/SKILL.md) |
+| Validate a creator session, apply for a column, upload assets, or create/update/submit articles | [panews-creator](skills/panews-creator/SKILL.md) |
 
 ## Quality Goals
 
