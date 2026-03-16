@@ -1,6 +1,6 @@
 ---
 name: panews
-description: Query the public PANews API for the currently bundled read-only workflows: article search, listings, rankings, and daily must-reads. Use panews-web-viewer instead when the user wants the rendered website page as Markdown.
+description: Query the public PANews API for the currently bundled read-only workflows: article search, listings, rankings, and daily must-reads.
 metadata:
   author: Seven Du
   version: "2026.03.16"

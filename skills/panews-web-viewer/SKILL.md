@@ -1,6 +1,6 @@
 ---
 name: panews-web-viewer
-description: Read public PANews website pages as Markdown. Use when the user wants to browse www.panewslab.com pages — homepage, article content, or column listings.
+description: Read public PANews website pages as Markdown. Use for homepage, article-page, and column-page reads.
 metadata:
   author: Seven Du
   version: "2026.03.16"

@@ -1,18 +1,18 @@
 ---
 name: content-format
-description: Article content format guide — write in Markdown, convert to HTML, save to a file, then pass to --content-file.
+description: Article content format guide — write in Markdown, convert it to HTML, save it to a file, then pass it to --content-file.
 ---
 
 # Article Content Format
 
 ## Rule
 
-Always write article content in **Markdown**, then render it to HTML before submitting.
+Always write article content in **Markdown**, then convert it to HTML before submitting.
 
 The `--content-file` parameter accepts an HTML file. Workflow:
 
 1. Write content in Markdown
-2. Render Markdown → HTML with a Markdown CLI such as `md4x`
+2. Convert Markdown → HTML with a Markdown CLI such as `md4x`
 3. Save the HTML to a temporary file
 4. Pass the file path to `--content-file`
 
