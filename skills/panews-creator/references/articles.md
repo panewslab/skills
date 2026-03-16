@@ -46,6 +46,13 @@ These are **column-owner** routes, not admin routes.
 | `tags` | no | Tag ID array, max 5 |
 | `status` | yes | `DRAFT` or `PENDING` only |
 
+Recommended flow:
+
+1. Write the article in Markdown
+2. Convert it to HTML with `md4x` using the package runner available in the environment
+3. Upload any local images first if they need PANews CDN URLs
+4. Submit with `--content-file`
+
 ## Update Article
 
 `PATCH /columns/{columnId}/articles/{articleId}`

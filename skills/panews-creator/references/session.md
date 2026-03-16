@@ -29,3 +29,4 @@ PA-User-Session: <session>
 
 - `401` — session is invalid or expired; discard and re-resolve from the beginning
 - Never cache a session that returned 401
+- Validate the session before any mutating request, not after a failed publish
