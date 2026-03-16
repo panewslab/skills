@@ -7,6 +7,8 @@ description: PANews non-article content endpoints — daily must-reads, columns,
 
 Base URL: `https://universal-api.panewslab.com`
 
+This reference documents adjacent public endpoints that may be useful for direct HTTP calls. The bundled scripts in this skill currently focus on article search, listings, rankings, and daily must-reads.
+
 ## Daily Must-Reads
 
 `GET /daily-must-reads?date=YYYY-MM-DD`
