@@ -23,7 +23,7 @@ export const createArticleCommand = defineCommand({
     title: { type: 'string', description: 'Article title', required: true },
     desc: { type: 'string', description: 'Article summary', required: true },
     'content-file': { type: 'string', description: 'Path to Markdown content file', required: true },
-    lang: { type: 'string', description: 'Article language: zh | zh-hant | en | ja | ko', required: true },
+    lang: { type: 'string', description: 'Article language code or locale (e.g. zh, en, zh-TW)', required: true },
     cover: { type: 'string', description: 'Cover image URL' },
     tags: { type: 'string', description: 'Comma-separated tag IDs' },
     status: { type: 'string', description: 'DRAFT | PENDING', default: 'DRAFT' },

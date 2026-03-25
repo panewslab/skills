@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { request } from '../utils/http.ts'
-import { parseLang } from '../utils/lang.ts'
+import { resolveLang } from '../utils/lang.ts'
 import { select, toMarkdown } from '../utils/format.ts'
 
 const SearchModeSchema = z.enum(['hit', 'time'])
@@ -41,13 +41,13 @@ export const searchArticlesCommand = defineCommand({
     },
     lang: {
       type: 'string',
-      description: 'Language: zh | zh-hant | en | ja | ko',
+      description: 'Language code or locale (e.g. zh, en, zh-TW, en-US); auto-detected if omitted',
 
     },
   },
   async run({ args }) {
     const mode = SearchModeSchema.parse(args.mode || 'hit')
-    const lang = parseLang(args.lang)
+    const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(50).parse(args.take || '5')
 
     const raw = await request<SearchItem[]>('/search/articles', {

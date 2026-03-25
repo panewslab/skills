@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { request } from '../utils/http.ts'
-import { parseLang } from '../utils/lang.ts'
+import { resolveLang } from '../utils/lang.ts'
 import { select, toMarkdown } from '../utils/format.ts'
 
 const RankingTypeSchema = z.enum(['daily', 'weekly'])
@@ -35,13 +35,13 @@ export const getRankingsCommand = defineCommand({
     },
     lang: {
       type: 'string',
-      description: 'Language: zh | zh-hant | en | ja | ko',
+      description: 'Language code or locale (e.g. zh, en, zh-TW, en-US); auto-detected if omitted',
 
     },
   },
   async run({ args }) {
     const type = RankingTypeSchema.parse(args.type || 'daily')
-    const lang = parseLang(args.lang)
+    const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(30).parse(args.take || '10')
 
     const path = type === 'weekly' ? '/articles/rank/weekly/search' : '/articles/rank'

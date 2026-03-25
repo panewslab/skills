@@ -18426,7 +18426,7 @@ const createArticleCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Article language: zh | zh-hant | en | ja | ko",
+			description: "Article language code or locale (e.g. zh, en, zh-TW)",
 			required: true
 		},
 		cover: {
@@ -18656,14 +18656,65 @@ const uploadImageCommand = defineCommand({
 let e = function(e) {
 	return e.chineseSimplified = `zh`, e.chineseTraditional = `zh-hant`, e.english = `en`, e.japanese = `ja`, e.korean = `ko`, e;
 }({});
-e.chineseSimplified, e.chineseTraditional, e.english, e.japanese, e.korean;
-e.chineseSimplified;
+const t = [
+	[e.chineseSimplified, [
+		`zh-cn`,
+		`zh-hans`,
+		`zh-sg`
+	]],
+	[e.chineseTraditional, [`zh-tw`, `zh-hk`]],
+	[e.english, [`en-us`, `en-gb`]],
+	[e.japanese, [`ja-jp`]],
+	[e.korean, [`ko-kr`]]
+], n = e.chineseSimplified;
+function r(e) {
+	return e.trim().toLowerCase().replace(/_/g, `-`);
+}
+function i(e) {
+	return e.map(([e, t]) => [e, t.map(r)]);
+}
+function a(e, t) {
+	let n = r(e);
+	return t.find(([e, t]) => e === n || t.includes(n))?.[0];
+}
+function o(e) {
+	let t = r(e), n = t.lastIndexOf(`-`);
+	return n <= 0 ? null : t.slice(0, n);
+}
+function s(e, r = {}) {
+	let { defaultLanguage: s = n, aliases: l = t } = r;
+	if (!e) return s;
+	let u = i(l), d = a(e, u);
+	if (d) return d;
+	let f = c(e);
+	for (; f.length;) {
+		let e = f.shift();
+		if (!e || e === `*`) return s;
+		let t = a(e, u);
+		if (t) return t;
+		let n = o(e);
+		n && f.push(n);
+	}
+	return s;
+}
+function c(e) {
+	return e.split(`,`).map((e) => {
+		let [t, ...n] = e.split(`;`), i = t ? r(t) : ``, a = Object.fromEntries(n.map((e) => {
+			let [t, ...n] = e.split(`=`);
+			return [t?.trim().toLowerCase(), n.join(`=`).trim()];
+		}).filter(([e]) => e)).q, o = a === void 0 || a === `` ? 1 : parseFloat(a);
+		return Number.isFinite(o) || (o = 0), o = Math.min(Math.max(o, 0), 1), {
+			lang: i,
+			quality: o
+		};
+	}).filter((e) => e.lang).filter((e) => e.quality > 0).sort((e, t) => t.quality - e.quality).map((e) => e.lang);
+}
 //#endregion
 //#region src/utils/lang.ts
-const Lang = _enum(e);
-function parseLang(value) {
-	if (!value) return void 0;
-	return Lang.parse(value);
+function resolveLang(value) {
+	if (value) return s(value);
+	const sysLocale = Intl.DateTimeFormat().resolvedOptions().locale;
+	return s(sysLocale);
 }
 //#endregion
 //#region src/commands/creator/search-tags.ts
@@ -18682,11 +18733,11 @@ const searchTagsCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language: zh | zh-hant | en | ja | ko"
+			description: "Language code or locale (e.g. zh, en, zh-TW, en-US); auto-detected if omitted"
 		}
 	},
 	async run({ args }) {
-		const lang = parseLang(args.lang);
+		const lang = resolveLang(args.lang);
 		const take = number().int().min(1).max(100).parse(args.take || "10");
 		const items = (await request(`/tags?${new URLSearchParams({
 			search: args.query,
