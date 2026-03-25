@@ -42,9 +42,14 @@ metadata:
 ## CLI
 
 ```bash
-node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang <lang>]
-node {Skills Directory}/panews/scripts/cli.mjs search-articles --query <q> [--mode SMART|EXACT] [--take 10] [--lang <lang>]
-node {Skills Directory}/panews/scripts/cli.mjs get-hooks --category <category[,category2]> [--take 20] [--lang <lang>]
-node {Skills Directory}/panews/scripts/cli.mjs list-events [--search <q>] [--category <type>] [--country <code>] [--online true|false] [--paid false] [--take 15] [--lang <lang>]
-node {Skills Directory}/panews/scripts/cli.mjs list-calendar-events [--search <q>] [--start-from <YYYY-MM-DD>] [--order asc|desc] [--take 20] [--lang <lang>]
+node {Skills Directory}/panews/scripts/cli.mjs <command> [options]
 ```
+
+遇到不确定的参数，先用 `--help` 查看：
+
+```bash
+node {Skills Directory}/panews/scripts/cli.mjs --help
+node {Skills Directory}/panews/scripts/cli.mjs <command> --help
+```
+
+可用命令：`list-articles` · `get-daily-must-reads` · `get-rankings` · `search-articles` · `get-article` · `list-columns` · `get-column` · `list-series` · `get-series` · `list-topics` · `get-topic` · `list-events` · `list-calendar-events` · `get-hooks`
