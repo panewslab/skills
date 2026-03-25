@@ -6,9 +6,9 @@ metadata:
   version: "2026.03.16"
 ---
 
-Fetches `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
+Fetch `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
 
-Current first-class support in this skill is single-page fetching through the bundled script below. It is intended for homepage, article-page, and column-page reads, not broad site crawling.
+This skill is intended for single-page reads of homepages, article pages, and column pages, not broad site crawling.
 
 ## When to Use
 
@@ -42,24 +42,19 @@ PANews Web Progress:
 - [ ] Step 4: Preserve frontmatter metadata in the response
 ```
 
-## Scripts
-
-```bash
-node {Skills Directory}/panews-web-viewer/scripts/fetch-page.mjs <path-or-url> [--lang zh]
-```
-
-## Usage
-
-```bash
-node {Skills Directory}/panews-web-viewer/scripts/fetch-page.mjs /articles/ARTICLE_ID --lang en
-node {Skills Directory}/panews-web-viewer/scripts/fetch-page.mjs https://www.panewslab.com/zh-hant/columns/COLUMN_ID
-```
-
 ## Rules
 
-- Prefer the bundled `fetch-page.mjs` script; if you fall back to `curl`, use `-sSL`
+- Use a direct HTTP request with `Accept: text/markdown`
 - Always include the locale prefix in the URL
 - Route to `panews` if the user asks for structured search or filterable API data
+
+## Examples
+
+```text
+https://www.panewslab.com/en
+https://www.panewslab.com/en/ARTICLE_ID
+https://www.panewslab.com/zh-hant/columns/COLUMN_ID
+```
 
 ## Failure Handling
 
