@@ -36,8 +36,8 @@ On a 401 response, stop immediately and tell the user the session has expired an
 
 ## Language
 
-`--lang` accepts standard locale strings (`zh`, `en`, `zh-TW`, `en-US`, `ja-JP`, etc.), automatically mapped to the nearest supported language; auto-detects system locale if omitted.
-For `create-article`, `--lang` indicates the **article content language** — pass the language the article is actually written in.
+`--lang` accepts standard locale strings (`zh`, `en`, `zh-TW`, `en-US`, `ja-JP`, etc.), automatically mapped to the nearest supported language; most read-style commands auto-detect the system locale if omitted.
+For `create-article`, `--lang` indicates the **article content language** and is required. Pass the language the article is actually written in; this command does not auto-detect the locale.
 
 ## General principles
 
