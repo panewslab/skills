@@ -1,9 +1,9 @@
 ---
 name: panews-creator
 description: >
-  当用户想在 PANews 发布文章、管理自己的稿件或专栏时使用。
-  包括：发布新文章、查看稿件状态、修改草稿重新提交、申请专栏、润色文章。
-  所有操作都需要用户提供 PANews session。
+  在 PANews 平台创作与管理稿件，所有操作需要用户提供有效 session。
+  触发意图：撰写并发布新文章、查看 / 修改 / 删除草稿、被拒稿后编辑重投、
+  上传配图、搜索标签、申请开设专栏、润色或检查文章内容。
 metadata:
   author: Seven Du
 ---
