@@ -14,7 +14,7 @@ This is the PANews creator skill for contributors who need to write, edit, manag
 It is best suited for real PANews publishing operations rather than generic writing help alone. The skill should guide the user through the platform workflow clearly and safely, especially when session validation, submission state, or destructive actions are involved.
 
 **Session verification is required before any operation.**
-If no session is available, guide the user to get `PA-User-Session` from browser DevTools → Application → Cookies.
+If no session is available, guide the user to get `PA-User-Session` from browser DevTools -> Application -> Cookies.
 On a 401 response, stop immediately and tell the user the session has expired and needs to be refreshed.
 
 ## Common User Phrases
@@ -59,6 +59,10 @@ For `create-article`, `--lang` indicates the **article content language** and is
 ## Scripts
 
 - `scripts/cli.mjs`: unified entrypoint for PANews creator commands
+- Runtime behavior: this script makes outbound HTTPS requests to `https://universal-api.panewslab.com` for authenticated creator operations.
+- Local access: this script reads local Markdown or image files only when the caller explicitly provides a file path for article creation or image upload.
+- Credentials: this script accepts `PA-User-Session` via `--session` or the supported environment variables described by the commands.
+- Audit note: `scripts/cli.mjs` is a generated bundle built from the TypeScript sources in `src/`.
 
 ```bash
 node {Skills Directory}/panews-creator/scripts/cli.mjs <command> [options]

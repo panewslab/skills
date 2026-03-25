@@ -12,6 +12,8 @@ It is best suited for single-page retrieval from PANews URLs. The skill should p
 
 Read `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
 
+Runtime behavior: this skill performs direct HTTP GET requests to `https://www.panewslab.com` with `Accept: text/markdown` and returns the rendered Markdown response. It does not require local scripts, creator credentials, or broad site crawling.
+
 ## Common User Phrases
 
 - "Read this article as Markdown."

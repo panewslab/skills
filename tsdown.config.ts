@@ -3,7 +3,6 @@ import { defineConfig } from 'tsdown'
 const sharedConfig = {
   format: 'esm' as const,
   platform: 'node' as const,
-  minify: true,
   deps: {
     alwaysBundle: ['*', '*/*'],
     onlyBundle: false,

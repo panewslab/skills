@@ -39,7 +39,7 @@ It is best suited for structured news discovery and explanation. The skill shoul
 ## General principles
 
 - Do not predict price movements or give investment advice
-- Content strictly from PANews — do not add information PANews has not reported
+- Content strictly from PANews - do not add information PANews has not reported
 - For publishing content, use the panews-creator skill
 
 ## Execution guidance
@@ -57,6 +57,9 @@ All CLI commands support `--lang`, accepting standard locale strings (e.g. `zh`,
 ## Scripts
 
 - `scripts/cli.mjs`: unified entrypoint for PANews reader commands
+- Runtime behavior: this script makes outbound HTTPS requests to `https://universal-api.panewslab.com` to fetch PANews content and metadata.
+- Local access: this script does not require creator credentials and does not read local files unless the caller explicitly passes a local path to a command that supports one.
+- Audit note: `scripts/cli.mjs` is a generated bundle built from the TypeScript sources in `src/`.
 
 ```bash
 node {Skills Directory}/panews/scripts/cli.mjs <command> [options]
