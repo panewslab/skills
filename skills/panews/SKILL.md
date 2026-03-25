@@ -7,6 +7,7 @@ description: >
   industry events & conferences, event calendar, platform hot searches and editorial picks.
 metadata:
   author: Seven Du
+  version: "2026.03.25"
 ---
 
 This is the core PANews reading skill for users who want to follow cryptocurrency and blockchain news through PANews coverage. Use it for market-moving headlines, project and token updates, rankings, deep dives, topics, columns, series, events, and editorial picks.
