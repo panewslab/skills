@@ -62,7 +62,7 @@ For `create-article`, `--lang` indicates the **article content language** and is
 - Runtime behavior: this script makes outbound HTTPS requests to `https://universal-api.panewslab.com` for authenticated creator operations.
 - Local access: this script reads local Markdown or image files only when the caller explicitly provides a file path for article creation or image upload.
 - Credentials: this script accepts `PA-User-Session` via `--session` or the supported environment variables described by the commands.
-- Source code: review [../../src/panews-creator.ts](../../src/panews-creator.ts), [../../src/commands/creator](../../src/commands/creator), and [../../src/utils](../../src/utils) in this repository. `scripts/cli.mjs` is the generated bundle built from those sources.
+- Source code: review [src/panews-creator.ts](https://github.com/panewslab/skills/blob/main/src/panews-creator.ts), [src/commands/creator](https://github.com/panewslab/skills/tree/main/src/commands/creator), and [src/utils](https://github.com/panewslab/skills/tree/main/src/utils). `scripts/cli.mjs` is the generated bundle built from those sources.
 
 ```bash
 node {Skills Directory}/panews-creator/scripts/cli.mjs <command> [options]
