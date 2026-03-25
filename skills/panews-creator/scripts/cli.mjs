@@ -18318,6 +18318,87 @@ const creatorListArticlesCommand = defineCommand({
 	}
 });
 //#endregion
+//#region node_modules/md4x/lib/_shared.mjs
+const decoder = new TextDecoder();
+function parseCodeMeta(bytes, extraFields) {
+	const nullIdx = bytes.indexOf(0);
+	if (nullIdx === -1) return {
+		output: decoder.decode(bytes),
+		codeBlocks: []
+	};
+	const outBytes = bytes.subarray(0, nullIdx);
+	const metaBytes = bytes.subarray(nullIdx + 1);
+	return {
+		output: decoder.decode(outBytes),
+		codeBlocks: JSON.parse(decoder.decode(metaBytes)).map((m) => {
+			const block = {
+				start: decoder.decode(outBytes.subarray(0, m.s)).length,
+				end: decoder.decode(outBytes.subarray(0, m.e)).length,
+				lang: m.l || ""
+			};
+			if (m.f) block.filename = m.f;
+			if (m.h) block.highlights = m.h;
+			if (extraFields) extraFields(block, m);
+			return block;
+		})
+	};
+}
+function parseHtmlMeta(bytes) {
+	const { output, codeBlocks } = parseCodeMeta(bytes);
+	return {
+		html: output,
+		codeBlocks
+	};
+}
+function parseHtmlWithHighlighting(bytes, highlighter) {
+	const { html, codeBlocks } = parseHtmlMeta(bytes);
+	if (codeBlocks.length === 0) return html;
+	let out = "";
+	let pos = 0;
+	for (const block of codeBlocks) {
+		const highlighted = highlighter(unescapeHtml(html.slice(block.start, block.end)), block);
+		if (highlighted === void 0) out += html.slice(pos, block.end);
+		else {
+			const preLen = block.lang ? 27 + block.lang.length + 2 : 11;
+			out += html.slice(pos, block.start - preLen);
+			out += highlighted;
+			pos = block.end + 14;
+			continue;
+		}
+		pos = block.end;
+	}
+	out += html.slice(pos);
+	return out;
+}
+function unescapeHtml(str) {
+	if (!str.includes("&")) return str;
+	return str.replaceAll("&amp;", "&").replaceAll("&lt;", "<").replaceAll("&gt;", ">").replaceAll("&quot;", "\"");
+}
+//#endregion
+//#region node_modules/md4x/lib/napi.mjs
+let binding;
+function str(input) {
+	if (input == null) return "";
+	if (typeof input !== "string") throw new TypeError("md4x: input must be a string");
+	return input;
+}
+function getBinding(opts) {
+	if (binding) return binding;
+	if (opts?.binding) return binding = opts.binding;
+	const { arch, platform } = globalThis.process || {};
+	const { createRequire } = globalThis.process?.getBuiltinModule?.("module");
+	const isMusl = platform === "linux" && !process.report?.getReport?.()?.header?.glibcVersionRuntime;
+	return binding = createRequire(import.meta.url)(`../build/md4x.${platform}-${arch}${isMusl ? "-musl" : ""}.node`);
+}
+const HEAL_FLAG = 256;
+function renderToHtml(input, opts) {
+	let flags = opts?.full ? 8 : 0;
+	if (opts?.heal) flags |= HEAL_FLAG;
+	if (!opts?.highlighter) return getBinding().renderToHtml(str(input), flags);
+	const buf = getBinding().renderToHtmlMeta(str(input));
+	return parseHtmlWithHighlighting(new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength), opts.highlighter);
+}
+//#endregion
 //#region src/commands/creator/create-article.ts
 const ArticleStatusSchema$1 = _enum(["DRAFT", "PENDING"]);
 const createArticleCommand = defineCommand({
@@ -18340,7 +18421,7 @@ const createArticleCommand = defineCommand({
 		},
 		"content-file": {
 			type: "string",
-			description: "Path to HTML content file",
+			description: "Path to Markdown content file",
 			required: true
 		},
 		lang: {
@@ -18372,7 +18453,7 @@ const createArticleCommand = defineCommand({
 			console.error(JSON.stringify({ error: "未提供 session。" }));
 			process.exit(1);
 		}
-		const content = readFileSync(args["content-file"], "utf-8");
+		const content = renderToHtml(readFileSync(args["content-file"], "utf-8"));
 		const status = ArticleStatusSchema$1.parse(args.status || "DRAFT");
 		const tagIds = args.tags ? args.tags.split(",").map((t) => t.trim()).filter(Boolean) : void 0;
 		const body = {
@@ -18422,7 +18503,7 @@ const updateArticleCommand = defineCommand({
 		},
 		"content-file": {
 			type: "string",
-			description: "Path to new HTML content file"
+			description: "Path to new Markdown content file"
 		},
 		cover: {
 			type: "string",
@@ -18450,7 +18531,7 @@ const updateArticleCommand = defineCommand({
 		const body = {};
 		if (args.title) body.title = args.title;
 		if (args.desc) body.desc = args.desc;
-		if (args["content-file"]) body.content = readFileSync(args["content-file"], "utf-8");
+		if (args["content-file"]) body.content = renderToHtml(readFileSync(args["content-file"], "utf-8"));
 		if (args.cover) body.cover = args.cover;
 		if (args.tags) body.tags = args.tags.split(",").map((t) => t.trim()).filter(Boolean);
 		if (args.status) body.status = ArticleStatusSchema.parse(args.status);

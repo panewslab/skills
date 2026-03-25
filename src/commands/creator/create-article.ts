@@ -1,6 +1,7 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { readFileSync } from 'node:fs'
+import { renderToHtml } from 'md4x'
 import { request } from '../../utils/http.ts'
 import { resolveSession } from '../../utils/session.ts'
 import { toMarkdown } from '../../utils/format.ts'
@@ -21,7 +22,7 @@ export const createArticleCommand = defineCommand({
     'column-id': { type: 'string', description: 'Column ID', required: true },
     title: { type: 'string', description: 'Article title', required: true },
     desc: { type: 'string', description: 'Article summary', required: true },
-    'content-file': { type: 'string', description: 'Path to HTML content file', required: true },
+    'content-file': { type: 'string', description: 'Path to Markdown content file', required: true },
     lang: { type: 'string', description: 'Language code', default: 'zh' },
     cover: { type: 'string', description: 'Cover image URL' },
     tags: { type: 'string', description: 'Comma-separated tag IDs' },
@@ -35,7 +36,8 @@ export const createArticleCommand = defineCommand({
       process.exit(1)
     }
 
-    const content = readFileSync(args['content-file'], 'utf-8')
+    const markdown = readFileSync(args['content-file'], 'utf-8')
+    const content = renderToHtml(markdown)
     const status = ArticleStatusSchema.parse(args.status || 'DRAFT')
     const tagIds = args.tags ? args.tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined
 

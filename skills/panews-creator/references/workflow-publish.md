@@ -33,7 +33,7 @@ node cli.mjs validate-session --session <token>
 |------|------|------|
 | 标题 | 是 | 建议 20 字以内 |
 | 摘要 | 是 | 50-100 字 |
-| 正文 | 是 | HTML 文件路径 |
+| 正文 | 是 | Markdown 文件路径 |
 | 封面图 | 建议 | 本地图片先上传，或提供 CDN URL |
 | 标签 | 否 | 最多 5 个 tag ID |
 | 语言 | 否 | 默认 zh |
@@ -63,7 +63,7 @@ node cli.mjs create-article \
   --column-id <id> \
   --title "<标题>" \
   --desc "<摘要>" \
-  --content-file <file.html> \
+  --content-file <file.md> \
   --lang zh \
   --cover <url> \
   --tags <id1,id2> \
