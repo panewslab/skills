@@ -16,6 +16,7 @@ metadata:
 | 场景 | 触发意图 | 参考 |
 |------|---------|------|
 | 今日速览 | 今天有什么大事？最近加密圈怎么了？ | workflow-today-briefing |
+| 搜索 | 搜一下 XX / 找找 XX 相关报道 | workflow-search |
 | 话题深挖 | 比特币/某项目/某事件 最近怎么样？ | workflow-topic-research |
 | 读懂一篇文章 | 用户给出文章链接或 ID | workflow-read-article |
 | 发现热门 | 现在大家都在讨论什么？ | workflow-trending |
@@ -25,6 +26,7 @@ metadata:
 | 浏览话题 | 大家对 XX 有什么看法 / 社区在讨论什么 | workflow-topics |
 | 热门活动 | 最近有哪些峰会/黑客松/活动 | workflow-events |
 | 事件日历 | 本月有什么重要事件 / 项目日程 | workflow-calendar |
+| 平台推荐 | 编辑推荐了什么 / 热搜词是什么 | workflow-hooks |
 
 ## 通用原则
 
@@ -41,6 +43,8 @@ metadata:
 
 ```bash
 node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang <lang>]
+node {Skills Directory}/panews/scripts/cli.mjs search-articles --query <q> [--mode SMART|EXACT] [--take 10] [--lang <lang>]
+node {Skills Directory}/panews/scripts/cli.mjs get-hooks --category <category[,category2]> [--take 20] [--lang <lang>]
 node {Skills Directory}/panews/scripts/cli.mjs list-events [--search <q>] [--category <type>] [--country <code>] [--online true|false] [--paid false] [--take 15] [--lang <lang>]
 node {Skills Directory}/panews/scripts/cli.mjs list-calendar-events [--search <q>] [--start-from <YYYY-MM-DD>] [--order asc|desc] [--take 20] [--lang <lang>]
 ```
