@@ -52,6 +52,8 @@ OpenClaw compatibility is provided through the Codex- and Claude-compatible bund
 For OpenClaw, install this bundle from a local checkout or archive:
 
 ```bash
+git clone https://github.com/panewslab/skills.git
+cd skills
 openclaw plugins install .
 # or link for development
 openclaw plugins install -l .
