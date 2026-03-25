@@ -39,10 +39,4 @@ export default defineConfig([
     ...sharedConfig,
     banner: makeBanner("PANews Creator CLI", "src/panews-creator.ts"),
   },
-  {
-    ...sharedConfig,
-    name: "openclaw",
-    entry: { openclaw: "src/openclaw.ts" },
-    outDir: "dist",
-  },
 ]);

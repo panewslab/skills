@@ -10,7 +10,7 @@
   },
   "homepage": "https://github.com/panewslab/skills",
   "files": [
-    "dist",
+    "src/openclaw.ts",
     "skills",
     ".claude-plugin",
     ".codex-plugin",
@@ -20,7 +20,7 @@
   ],
   "openclaw": {
     "extensions": [
-      "./dist/openclaw.mjs"
+      "./src/openclaw.ts"
     ],
     "compat": {
       "pluginApi": "^1.2.0"
@@ -33,7 +33,6 @@
     "build": "tsdown",
     "build:panews": "tsdown --config tsdown.config.ts --filter panews",
     "build:creator": "tsdown --config tsdown.config.ts --filter panews-creator",
-    "build:openclaw": "tsdown --config tsdown.config.ts --filter openclaw",
     "dev": "tsdown --watch"
   },
   "devDependencies": {
