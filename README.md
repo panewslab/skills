@@ -49,6 +49,14 @@ For Codex-style plugin hosts, point the host at this repository root so it can r
 
 OpenClaw compatibility is provided through the Codex- and Claude-compatible bundle layout in this repository, not through a native OpenClaw plugin manifest.
 
+For OpenClaw, install this bundle from a local checkout or archive:
+
+```bash
+openclaw plugins install .
+# or link for development
+openclaw plugins install -l .
+```
+
 ## Skills
 
 | Skill                                                  | What it is for                                                                                                                                                             | Use when                                                                                                |
