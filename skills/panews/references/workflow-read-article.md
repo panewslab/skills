@@ -19,7 +19,7 @@ PANews 文章 URL 格式：`https://www?.panewslab.com/{lang}?/{id}`
 ### 1. 获取文章全文
 
 ```bash
-node cli.mjs get-article <articleId> --lang zh
+node cli.mjs get-article <articleId> --lang <lang>
 ```
 
 ### 2. 输出结构

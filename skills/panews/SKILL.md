@@ -22,13 +22,25 @@ metadata:
 
 ## 通用原则
 
-- 语言默认中文，用户用其他语言提问则匹配用户语言
 - 不对价格走势做预测，不做投资建议
 - 内容严格来自 PANews，不添加 PANews 没有报道的信息
 - 需要发布内容时，使用 panews-creator skill
 
+## 语言
+
+根据用户使用的语言，在所有 CLI 命令中传入对应的 `--lang` 参数：
+
+| 用户语言 | `--lang` |
+|---------|---------|
+| 简体中文 | `zh` |
+| 繁体中文 | `zh-hant` |
+| English | `en` |
+| 日本語 | `ja` |
+| 한국어 | `ko` |
+| 其他语言 | `en`（回退） |
+
 ## CLI
 
 ```bash
-node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang zh]
+node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang <lang>]
 ```

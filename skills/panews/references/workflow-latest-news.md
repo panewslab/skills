@@ -15,7 +15,7 @@
 - "深度" / "分析文章" → `node cli.mjs list-articles --type NORMAL`
 
 ```bash
-node cli.mjs list-articles --type NEWS --take 10 --lang zh
+node cli.mjs list-articles --type NEWS --take 10 --lang <lang>
 ```
 
 ## 输出

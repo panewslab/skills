@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { request } from '../utils/http.ts'
-import { Lang } from '../utils/lang.ts'
+import { parseLang } from '../utils/lang.ts'
 import { htmlToMarkdown, toMarkdown } from '../utils/format.ts'
 
 interface Author {
@@ -31,12 +31,12 @@ export const getArticleCommand = defineCommand({
     },
     lang: {
       type: 'string',
-      description: 'Language code',
-      default: 'zh',
+      description: 'Language: zh | zh-hant | en | ja | ko',
+
     },
   },
   async run({ args }) {
-    const lang = Lang.parse(args.lang || 'zh')
+    const lang = parseLang(args.lang)
 
     const article = await request<Article>(`/articles/${args.id}`, { lang })
 

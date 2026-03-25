@@ -2598,7 +2598,11 @@ e.chineseSimplified, e.chineseTraditional, e.english, e.japanese, e.korean;
 e.chineseSimplified;
 //#endregion
 //#region src/utils/lang.ts
-const Lang = _enum(e).default(e.chineseSimplified);
+const Lang = _enum(e);
+function parseLang(value) {
+	if (!value) return void 0;
+	return Lang.parse(value);
+}
 //#endregion
 //#region node_modules/@mixmark-io/domino/lib/Event.js
 var require_Event = /* @__PURE__ */ __commonJSMin(((exports, module) => {
@@ -18265,13 +18269,12 @@ const listArticlesCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
 		const type = ArticleTypeSchema.parse(args.type || "NEWS");
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const take = number().int().min(1).max(100).parse(args.take || "10");
 		const items = (await request(`/articles?${new URLSearchParams({
 			type,
@@ -18299,12 +18302,11 @@ const getDailyMustReadsCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const items = (await request(`/daily-must-reads?date=${args.date || todayDate()}`, { lang })).map(({ article }) => select(article, [
 			"id",
 			"title",
@@ -18332,13 +18334,12 @@ const getRankingsCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
 		const type = RankingTypeSchema.parse(args.type || "daily");
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const take = number().int().min(1).max(30).parse(args.take || "10");
 		const items = ((await request(`${type === "weekly" ? "/articles/rank/weekly/search" : "/articles/rank"}?${new URLSearchParams({ take: String(take) })}`, { lang })).articles ?? []).map((article) => select(article, [
 			"id",
@@ -18372,13 +18373,12 @@ const searchArticlesCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
 		const mode = SearchModeSchema.parse(args.mode || "hit");
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const take = number().int().min(1).max(50).parse(args.take || "5");
 		const articles = (await request("/search/articles", {
 			lang,
@@ -18416,12 +18416,11 @@ const getArticleCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const article = await request(`/articles/${args.id}`, { lang });
 		const authorName = article.author?.profile?.name ?? null;
 		const tagNames = article.tags?.map((t) => t.tag?.name).filter(Boolean) ?? [];
