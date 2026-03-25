@@ -29,4 +29,4 @@ node cli.mjs list-articles --type NEWS --take 10 --lang <lang>
 ```
 
 不需要摘要，不需要分析。如果用户对某条感兴趣，自然会追问，
-届时使用 workflow-read-article 或 workflow-topic-research 深入。
+届时使用 [workflow-read-article](./workflow-read-article.md) 或 [workflow-topic-research](./workflow-topic-research.md) 深入。

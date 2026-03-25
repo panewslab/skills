@@ -23,7 +23,7 @@ node cli.mjs validate-session --session <token>
 从结果中取专栏列表：
 - 只有 1 个专栏 → 默认使用，告知用户
 - 多个专栏 → 列出让用户选择
-- 没有专栏 → 说明需先申请，参考 workflow-apply-column
+- 没有专栏 → 说明需先申请，参考 [workflow-apply-column](./workflow-apply-column.md)
 
 ### 2. 收集文章信息
 

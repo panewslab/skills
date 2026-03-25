@@ -23,7 +23,7 @@ node cli.mjs get-column <columnId> --take 10 --lang <lang>
 
 ### 3. 读某篇具体文章
 
-文章 ID 从上一步获取，然后走 workflow-read-article。
+文章 ID 从上一步获取，然后走 [workflow-read-article](./workflow-read-article.md)。
 
 ## 输出要求
 

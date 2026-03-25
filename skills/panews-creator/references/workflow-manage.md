@@ -22,4 +22,4 @@ node cli.mjs list-articles --column-id <id> --take 50 --session <token>
 ### 3. 主动提示
 
 如有 REJECTED 状态的文章：
-「有 X 篇被拒稿，需要修改后重新提交，需要我帮你处理吗？」→ 参考 workflow-revise
+「有 X 篇被拒稿，需要修改后重新提交，需要我帮你处理吗？」→ 参考 [workflow-revise](./workflow-revise.md)

@@ -22,4 +22,4 @@ node cli.mjs get-rankings --type daily --take 5 --lang <lang>
 - **本周最受搜索**：前 3 篇文章，标题 + 一句话说明为什么受关注
 - **今日最受关注**：3 篇文章，标题 + 一句话简介
 
-如用户想深入某个热门话题，使用 workflow-topic-research。
+如用户想深入某个热门话题，使用 [workflow-topic-research](./workflow-topic-research.md)。

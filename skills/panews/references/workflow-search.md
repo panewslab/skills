@@ -5,7 +5,7 @@
 
 与其他场景的区别：
 - 搜索 → 用户主动输入关键词，查找匹配内容
-- 话题深挖（workflow-topic-research）→ 用户想全面了解某个主题，需要综合多种来源
+- 话题深挖（[workflow-topic-research](./workflow-topic-research.md)）→ 用户想全面了解某个主题，需要综合多种来源
 - 今日速览 → 关注当日最新内容
 
 ## 步骤
@@ -32,7 +32,7 @@ node cli.mjs search-articles --query "<关键词>" [--mode SMART|EXACT] [--take 
 
 ### 3. 深入某篇文章
 
-从搜索结果获取文章 ID，进入 workflow-read-article。
+从搜索结果获取文章 ID，进入 [workflow-read-article](./workflow-read-article.md)。
 
 ## 输出要求
 

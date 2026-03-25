@@ -15,18 +15,18 @@ metadata:
 
 | 场景 | 触发意图 | 参考 |
 |------|---------|------|
-| 今日速览 | 今天有什么大事？最近加密圈怎么了？ | workflow-today-briefing |
-| 搜索 | 搜一下 XX / 找找 XX 相关报道 | workflow-search |
-| 话题深挖 | 比特币/某项目/某事件 最近怎么样？ | workflow-topic-research |
-| 读懂一篇文章 | 用户给出文章链接或 ID | workflow-read-article |
-| 发现热门 | 现在大家都在讨论什么？ | workflow-trending |
-| 浏览最新资讯 | 最新快讯 / 刚发生了什么 | workflow-latest-news |
-| 浏览专栏 | 有哪些专栏 / 这个作者的专栏 | workflow-columns |
-| 浏览专题 | 有没有关于 XX 的系列报道 | workflow-series |
-| 浏览话题 | 大家对 XX 有什么看法 / 社区在讨论什么 | workflow-topics |
-| 热门活动 | 最近有哪些峰会/黑客松/活动 | workflow-events |
-| 事件日历 | 本月有什么重要事件 / 项目日程 | workflow-calendar |
-| 平台推荐 | 编辑推荐了什么 / 热搜词是什么 | workflow-hooks |
+| 今日速览 | 今天有什么大事？最近加密圈怎么了？ | [workflow-today-briefing](./references/workflow-today-briefing.md) |
+| 搜索 | 搜一下 XX / 找找 XX 相关报道 | [workflow-search](./references/workflow-search.md) |
+| 话题深挖 | 比特币/某项目/某事件 最近怎么样？ | [workflow-topic-research](./references/workflow-topic-research.md) |
+| 读懂一篇文章 | 用户给出文章链接或 ID | [workflow-read-article](./references/workflow-read-article.md) |
+| 发现热门 | 现在大家都在讨论什么？ | [workflow-trending](./references/workflow-trending.md) |
+| 浏览最新资讯 | 最新快讯 / 刚发生了什么 | [workflow-latest-news](./references/workflow-latest-news.md) |
+| 浏览专栏 | 有哪些专栏 / 这个作者的专栏 | [workflow-columns](./references/workflow-columns.md) |
+| 浏览专题 | 有没有关于 XX 的系列报道 | [workflow-series](./references/workflow-series.md) |
+| 浏览话题 | 大家对 XX 有什么看法 / 社区在讨论什么 | [workflow-topics](./references/workflow-topics.md) |
+| 热门活动 | 最近有哪些峰会/黑客松/活动 | [workflow-events](./references/workflow-events.md) |
+| 事件日历 | 本月有什么重要事件 / 项目日程 | [workflow-calendar](./references/workflow-calendar.md) |
+| 平台推荐 | 编辑推荐了什么 / 热搜词是什么 | [workflow-hooks](./references/workflow-hooks.md) |
 
 ## 通用原则
 

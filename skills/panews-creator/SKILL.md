@@ -18,11 +18,11 @@ metadata:
 
 | 场景 | 触发意图 | 参考 |
 |------|---------|------|
-| 发布新文章 | 我想发一篇文章 / 帮我发稿 | workflow-publish |
-| 管理我的文章 | 我的稿件状态 / 有没有被拒稿 | workflow-manage |
-| 修改并重新提交 | 修改草稿 / 被拒稿重投 | workflow-revise |
-| 申请专栏 | 我还没有专栏 / 想开专栏 | workflow-apply-column |
-| 润色文章 | 帮我改改这篇文章 / 检查一下文章 | workflow-polish |
+| 发布新文章 | 我想发一篇文章 / 帮我发稿 | [workflow-publish](./references/workflow-publish.md) |
+| 管理我的文章 | 我的稿件状态 / 有没有被拒稿 | [workflow-manage](./references/workflow-manage.md) |
+| 修改并重新提交 | 修改草稿 / 被拒稿重投 | [workflow-revise](./references/workflow-revise.md) |
+| 申请专栏 | 我还没有专栏 / 想开专栏 | [workflow-apply-column](./references/workflow-apply-column.md) |
+| 润色文章 | 帮我改改这篇文章 / 检查一下文章 | [workflow-polish](./references/workflow-polish.md) |
 
 ## 语言
 

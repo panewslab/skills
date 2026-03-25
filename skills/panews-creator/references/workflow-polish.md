@@ -26,7 +26,7 @@
 
 ### 4. 询问后续
 
-需要直接帮你改好，还是你自己调整？如果需要发布，自然衔接到 workflow-publish。
+需要直接帮你改好，还是你自己调整？如果需要发布，自然衔接到 [workflow-publish](./workflow-publish.md)。
 
 ## 原则
 

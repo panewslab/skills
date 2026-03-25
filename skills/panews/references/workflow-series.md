@@ -23,7 +23,7 @@ node cli.mjs get-series <seriesId> --take 10 --lang <lang>
 
 ### 3. 深入某篇文章
 
-文章 ID 从上一步获取，走 workflow-read-article。
+文章 ID 从上一步获取，走 [workflow-read-article](./workflow-read-article.md)。
 
 ## 注意
 
