@@ -12,13 +12,13 @@
 ### 1. 获取今日精选
 
 ```bash
-node cli.mjs get-daily-must-reads --lang zh
+node cli.mjs get-daily-must-reads --lang <lang>
 ```
 
 ### 2. 获取 24 小时文章热榜
 
 ```bash
-node cli.mjs get-rankings --type daily --take 10 --lang zh
+node cli.mjs get-rankings --type daily --take 10 --lang <lang>
 ```
 
 ### 3. 综合整理

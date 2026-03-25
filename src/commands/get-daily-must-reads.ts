@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { request } from '../utils/http.ts'
-import { Lang } from '../utils/lang.ts'
+import { parseLang } from '../utils/lang.ts'
 import { select, toMarkdown } from '../utils/format.ts'
 
 interface Article {
@@ -32,12 +32,12 @@ export const getDailyMustReadsCommand = defineCommand({
     },
     lang: {
       type: 'string',
-      description: 'Language code',
-      default: 'zh',
+      description: 'Language: zh | zh-hant | en | ja | ko',
+
     },
   },
   async run({ args }) {
-    const lang = Lang.parse(args.lang || 'zh')
+    const lang = parseLang(args.lang)
     const date = args.date || todayDate()
 
     const data = await request<MustReadItem[]>(

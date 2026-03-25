@@ -23,7 +23,7 @@ export const createArticleCommand = defineCommand({
     title: { type: 'string', description: 'Article title', required: true },
     desc: { type: 'string', description: 'Article summary', required: true },
     'content-file': { type: 'string', description: 'Path to Markdown content file', required: true },
-    lang: { type: 'string', description: 'Language code', default: 'zh' },
+    lang: { type: 'string', description: 'Article language: zh | zh-hant | en | ja | ko', required: true },
     cover: { type: 'string', description: 'Cover image URL' },
     tags: { type: 'string', description: 'Comma-separated tag IDs' },
     status: { type: 'string', description: 'DRAFT | PENDING', default: 'DRAFT' },
@@ -42,7 +42,7 @@ export const createArticleCommand = defineCommand({
     const tagIds = args.tags ? args.tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined
 
     const body: Record<string, unknown> = {
-      lang: args.lang || 'zh',
+      lang: args.lang,
       title: args.title,
       desc: args.desc,
       content,

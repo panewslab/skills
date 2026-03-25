@@ -18426,8 +18426,8 @@ const createArticleCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Article language: zh | zh-hant | en | ja | ko",
+			required: true
 		},
 		cover: {
 			type: "string",
@@ -18457,7 +18457,7 @@ const createArticleCommand = defineCommand({
 		const status = ArticleStatusSchema$1.parse(args.status || "DRAFT");
 		const tagIds = args.tags ? args.tags.split(",").map((t) => t.trim()).filter(Boolean) : void 0;
 		const body = {
-			lang: args.lang || "zh",
+			lang: args.lang,
 			title: args.title,
 			desc: args.desc,
 			content,
@@ -18660,7 +18660,11 @@ e.chineseSimplified, e.chineseTraditional, e.english, e.japanese, e.korean;
 e.chineseSimplified;
 //#endregion
 //#region src/utils/lang.ts
-const Lang = _enum(e).default(e.chineseSimplified);
+const Lang = _enum(e);
+function parseLang(value) {
+	if (!value) return void 0;
+	return Lang.parse(value);
+}
 //#endregion
 //#region src/commands/creator/search-tags.ts
 const searchTagsCommand = defineCommand({
@@ -18678,12 +18682,11 @@ const searchTagsCommand = defineCommand({
 		},
 		lang: {
 			type: "string",
-			description: "Language code",
-			default: "zh"
+			description: "Language: zh | zh-hant | en | ja | ko"
 		}
 	},
 	async run({ args }) {
-		const lang = Lang.parse(args.lang || "zh");
+		const lang = parseLang(args.lang);
 		const take = number().int().min(1).max(100).parse(args.take || "10");
 		const items = (await request(`/tags?${new URLSearchParams({
 			search: args.query,

@@ -8,13 +8,13 @@
 ### 1. 获取 7 天搜索热门文章
 
 ```bash
-node cli.mjs get-rankings --type weekly --take 5 --lang zh
+node cli.mjs get-rankings --type weekly --take 5 --lang <lang>
 ```
 
 ### 2. 获取 24 小时文章热榜
 
 ```bash
-node cli.mjs get-rankings --type daily --take 5 --lang zh
+node cli.mjs get-rankings --type daily --take 5 --lang <lang>
 ```
 
 ### 3. 输出

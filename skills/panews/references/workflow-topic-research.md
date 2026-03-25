@@ -8,7 +8,7 @@
 ### 1. 搜索相关文章（相关性优先）
 
 ```bash
-node cli.mjs search-articles "<用户关键词>" --mode hit --take 5 --lang zh
+node cli.mjs search-articles "<用户关键词>" --mode hit --take 5 --lang <lang>
 ```
 
 ### 2. 评估相关性
@@ -20,7 +20,7 @@ node cli.mjs search-articles "<用户关键词>" --mode hit --take 5 --lang zh
 ### 3. 获取 2-3 篇最相关文章的全文
 
 ```bash
-node cli.mjs get-article <id> --lang zh
+node cli.mjs get-article <id> --lang <lang>
 ```
 
 ### 4. 综合输出

@@ -64,7 +64,7 @@ node cli.mjs create-article \
   --title "<标题>" \
   --desc "<摘要>" \
   --content-file <file.md> \
-  --lang zh \
+  --lang <lang> \
   --cover <url> \
   --tags <id1,id2> \
   --status DRAFT \
