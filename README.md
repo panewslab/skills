@@ -23,8 +23,8 @@ Install PANews skills at github.com/panewslab/skills
 | Skill                                                  | Description                                                                                                                                                                |
 | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [panews](skills/panews/SKILL.md)                       | Structured PANews cryptocurrency and blockchain news discovery across briefings, article search, rankings, topics, columns, series, events, calendars, and editorial picks |
-| [panews-creator](skills/panews-creator/SKILL.md)       | Authenticated PANews creator workflows for session validation, columns, drafts, submissions, image uploads, tag search, and article creation or updates                    |
-| [panews-web-viewer](skills/panews-web-viewer/SKILL.md) | Protocol-focused skill for reading PANews homepage, article, and column web pages as Markdown with page metadata                                                           |
+| [panews-creator](skills/panews-creator/SKILL.md)       | Write, manage, and publish PANews articles with authenticated creator tools for sessions, drafts, submissions, image uploads, tag search, and columns                       |
+| [panews-web-viewer](skills/panews-web-viewer/SKILL.md) | Read PANews homepage, article, and column pages as Markdown with page metadata                                                                                              |
 
 ## Choosing a Skill
 
