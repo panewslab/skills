@@ -22,6 +22,8 @@ On a 401 response, stop immediately and tell the user the session has expired an
 | Manage my articles | Status of my submissions / any rejections | [workflow-manage](./references/workflow-manage.md) |
 | Revise and resubmit | Edit a draft / resubmit a rejected article | [workflow-revise](./references/workflow-revise.md) |
 | Apply for a column | I don't have a column yet / want to start a column | [workflow-apply-column](./references/workflow-apply-column.md) |
+| Upload an image | Upload this cover image / turn this local image into a usable asset URL | Use `upload-image` |
+| Search tags | Find suitable tags / search PANews tags for this topic | Use `search-tags` |
 | Polish an article | Help me improve this article / review it | [workflow-polish](./references/workflow-polish.md) |
 
 ## Language

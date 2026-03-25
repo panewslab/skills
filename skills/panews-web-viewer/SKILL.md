@@ -6,7 +6,7 @@ metadata:
   version: "2026.03.16"
 ---
 
-Fetch `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
+Read `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
 
 This skill is intended for single-page reads of homepages, article pages, and column pages, not broad site crawling.
 
@@ -40,6 +40,19 @@ PANews Web Progress:
 - [ ] Step 2: Choose the locale prefix
 - [ ] Step 3: Fetch with Accept: text/markdown
 - [ ] Step 4: Preserve frontmatter metadata in the response
+```
+
+## Standard Request Template
+
+```text
+1. Start from https://www.panewslab.com
+2. Build a page URL using one of the supported locale prefixes:
+   /zh, /zh-hant, /en, /ja, /ko
+3. If the caller provides a PANews path without a locale prefix, prepend the prefix from `--lang`, or default to `/zh`
+4. Send an HTTP GET request with:
+   Accept: text/markdown
+5. Return the Markdown body as-is, including YAML frontmatter metadata
+6. If the response is 404, report the page as unavailable
 ```
 
 ## Rules
