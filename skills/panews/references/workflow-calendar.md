@@ -1,6 +1,6 @@
 # Event Calendar
 
-**Trigger**: User wants to check upcoming important events in the crypto space — project milestones, policy dates, macro economic schedules, etc.
+**Trigger**: User wants to check upcoming important events in the crypto space — project milestones, policy dates, macroeconomic schedules, etc.
 Common phrases: "Any important events coming up", "What's happening this month", "Any scheduled dates for XX".
 
 Difference between event calendar and events:
