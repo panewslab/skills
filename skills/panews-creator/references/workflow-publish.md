@@ -51,10 +51,10 @@ Use the returned URL as the `--cover` value.
 ### 4. Handle tags (optional)
 
 ```bash
-node cli.mjs search-tags "<keyword>" --session <token>
+node cli.mjs search-tags "<keyword>"
 ```
 
-Show results for the user to select tag IDs.
+Show results for the user to select tag IDs. Unlike write operations, this tag lookup does not require a session token.
 
 ### 5. Create article (save as draft first)
 
