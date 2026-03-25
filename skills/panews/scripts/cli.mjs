@@ -18933,6 +18933,7 @@ const getHooksCommand = defineCommand({
 		const lang = resolveLang(args.lang);
 		const take = number().int().min(1).max(100).parse(args.take || "20");
 		const categories = args.category.split(",").map((c) => c.trim()).filter(Boolean).map((c) => HookCategorySchema.parse(c));
+		if (categories.length === 0) throw new Error("At least one non-empty hook category is required.");
 		const items = (await request(`/hooks?${new URLSearchParams({
 			category: categories.join(","),
 			onlyValid: "true",

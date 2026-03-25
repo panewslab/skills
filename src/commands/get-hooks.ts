@@ -73,6 +73,10 @@ export const getHooksCommand = defineCommand({
       .filter(Boolean)
       .map((c) => HookCategorySchema.parse(c))
 
+    if (categories.length === 0) {
+      throw new Error('At least one non-empty hook category is required.')
+    }
+
     const params = new URLSearchParams({
       category: categories.join(','),
       onlyValid: 'true',

@@ -414,7 +414,16 @@ async function request(path, options = {}) {
 //#endregion
 //#region src/utils/session.ts
 function resolveSession(fromArg) {
-	return fromArg || process.env["PANEWS_USER_SESSION"] || process.env["PA_USER_SESSION"] || process.env["PA_USER_SESSION_ID"];
+	const candidates = [
+		fromArg,
+		process.env["PANEWS_USER_SESSION"],
+		process.env["PA_USER_SESSION"],
+		process.env["PA_USER_SESSION_ID"]
+	];
+	for (const candidate of candidates) {
+		const trimmed = candidate?.trim();
+		if (trimmed) return trimmed;
+	}
 }
 //#endregion
 //#region node_modules/@mixmark-io/domino/lib/Event.js
