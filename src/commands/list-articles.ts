@@ -24,6 +24,14 @@ export const listArticlesCommand = defineCommand({
       description: 'Article type: NORMAL | NEWS | VIDEO',
       default: 'NEWS',
     },
+    'column-id': {
+      type: 'string',
+      description: 'Filter by column ID',
+    },
+    'series-id': {
+      type: 'string',
+      description: 'Filter by series ID',
+    },
     take: {
       type: 'string',
       description: 'Number of articles to return (max 100)',
@@ -32,15 +40,19 @@ export const listArticlesCommand = defineCommand({
     lang: {
       type: 'string',
       description: 'Language code or locale (e.g. zh, en, zh-TW, en-US); auto-detected if omitted',
-
     },
   },
   async run({ args }) {
-    const type = ArticleTypeSchema.parse(args.type || 'NEWS')
     const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(100).parse(args.take || '10')
 
-    const params = new URLSearchParams({ type, take: String(take) })
+    const params = new URLSearchParams({ take: String(take) })
+    if (!args['column-id'] && !args['series-id']) {
+      params.set('type', ArticleTypeSchema.parse(args.type || 'NEWS'))
+    }
+    if (args['column-id']) params.set('columnId', args['column-id'])
+    if (args['series-id']) params.set('seriesId', args['series-id'])
+
     const data = await request<Article[]>(`/articles?${params}`, { lang })
 
     const items = data.map((article) =>

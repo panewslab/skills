@@ -3,7 +3,7 @@ name: panews
 description: >
   当用户想了解加密货币或区块链相关新闻时使用。
   包括：了解今日行业动态、搜索某个话题或项目的报道、
-  查看热门文章和趋势、阅读并理解一篇具体的文章。
+  查看热门文章和趋势、阅读具体文章、浏览专栏/专题/话题。
 metadata:
   author: Seven Du
 ---
@@ -19,6 +19,9 @@ metadata:
 | 读懂一篇文章 | 用户给出文章链接或 ID | workflow-read-article |
 | 发现热门 | 现在大家都在讨论什么？ | workflow-trending |
 | 浏览最新资讯 | 最新快讯 / 刚发生了什么 | workflow-latest-news |
+| 浏览专栏 | 有哪些专栏 / 这个作者的专栏 | workflow-columns |
+| 浏览专题 | 有没有关于 XX 的系列报道 | workflow-series |
+| 浏览话题 | 大家对 XX 有什么看法 / 社区在讨论什么 | workflow-topics |
 
 ## 通用原则
 

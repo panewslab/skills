@@ -18313,6 +18313,14 @@ const listArticlesCommand = defineCommand({
 			description: "Article type: NORMAL | NEWS | VIDEO",
 			default: "NEWS"
 		},
+		"column-id": {
+			type: "string",
+			description: "Filter by column ID"
+		},
+		"series-id": {
+			type: "string",
+			description: "Filter by series ID"
+		},
 		take: {
 			type: "string",
 			description: "Number of articles to return (max 100)",
@@ -18324,13 +18332,13 @@ const listArticlesCommand = defineCommand({
 		}
 	},
 	async run({ args }) {
-		const type = ArticleTypeSchema.parse(args.type || "NEWS");
 		const lang = resolveLang(args.lang);
 		const take = number().int().min(1).max(100).parse(args.take || "10");
-		const items = (await request(`/articles?${new URLSearchParams({
-			type,
-			take: String(take)
-		})}`, { lang })).map((article) => select(article, [
+		const params = new URLSearchParams({ take: String(take) });
+		if (!args["column-id"] && !args["series-id"]) params.set("type", ArticleTypeSchema.parse(args.type || "NEWS"));
+		if (args["column-id"]) params.set("columnId", args["column-id"]);
+		if (args["series-id"]) params.set("seriesId", args["series-id"]);
+		const items = (await request(`/articles?${params}`, { lang })).map((article) => select(article, [
 			"id",
 			"title",
 			"desc",
@@ -18494,6 +18502,245 @@ const getArticleCommand = defineCommand({
 	}
 });
 //#endregion
+//#region src/commands/list-columns.ts
+const listColumnsCommand = defineCommand({
+	meta: { description: "List or search PANews columns" },
+	args: {
+		search: {
+			type: "string",
+			description: "Search by column name"
+		},
+		take: {
+			type: "string",
+			description: "Number of results (max 100)",
+			default: "10"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "10");
+		const params = new URLSearchParams({
+			take: String(take),
+			orderBy: "lastPostAt",
+			includeMetric: "true"
+		});
+		if (args.search) params.set("search", args.search);
+		const items = (await request(`/columns?${params}`, { lang })).map((c) => ({
+			id: c.id,
+			name: c.name,
+			author: c.owner?.profile?.name,
+			published: c.metric?.published,
+			followers: c.followersCount,
+			lastPostAt: c.lastPostAt
+		}));
+		console.log(toMarkdown(items));
+	}
+});
+//#endregion
+//#region src/commands/get-column.ts
+const getColumnCommand = defineCommand({
+	meta: { description: "Get column details and recent articles" },
+	args: {
+		id: {
+			type: "positional",
+			description: "Column ID",
+			required: true
+		},
+		take: {
+			type: "string",
+			description: "Number of recent articles to fetch",
+			default: "10"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "10");
+		const [column, articles] = await Promise.all([request(`/columns/${args.id}?includeMetric=true`, { lang }), request(`/articles?columnId=${args.id}&take=${take}`, { lang })]);
+		const meta = {
+			id: column.id,
+			name: column.name,
+			desc: column.desc,
+			author: column.owner?.profile?.name,
+			published: column.metric?.published,
+			followers: column.followersCount,
+			lastPostAt: column.lastPostAt
+		};
+		const items = articles.map((a) => select(a, [
+			"id",
+			"title",
+			"desc",
+			"publishedAt"
+		]));
+		console.log(toMarkdown(meta));
+		if (items.length > 0) {
+			console.log("\n---\n");
+			console.log(toMarkdown(items));
+		}
+	}
+});
+//#endregion
+//#region src/commands/list-series.ts
+const listSeriesCommand = defineCommand({
+	meta: { description: "List or search PANews series (专题)" },
+	args: {
+		search: {
+			type: "string",
+			description: "Search by series name"
+		},
+		take: {
+			type: "string",
+			description: "Number of results (max 100)",
+			default: "10"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "10");
+		const params = new URLSearchParams({ take: String(take) });
+		if (args.search) params.set("search", args.search);
+		const items = (await request(`/series?${params}`, { lang })).map((s) => {
+			const translation = s.translations?.find((t) => t.lang === lang) ?? s.translations?.[0];
+			return {
+				id: s.id,
+				name: translation?.name || s.name,
+				lastPublishedAt: s.lastPublishedAt
+			};
+		});
+		console.log(toMarkdown(items));
+	}
+});
+//#endregion
+//#region src/commands/get-series.ts
+const getSeriesCommand = defineCommand({
+	meta: { description: "Get series (专题) details and articles" },
+	args: {
+		id: {
+			type: "positional",
+			description: "Series ID",
+			required: true
+		},
+		take: {
+			type: "string",
+			description: "Number of articles to fetch",
+			default: "10"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "10");
+		const [series, articles] = await Promise.all([request(`/series/${args.id}`, { lang }), request(`/articles?seriesId=${args.id}&take=${take}`, { lang })]);
+		const translation = series.translations?.find((t) => t.lang === lang) ?? series.translations?.[0];
+		const meta = {
+			id: series.id,
+			name: translation?.name || series.name,
+			desc: translation?.desc,
+			lastPublishedAt: series.lastPublishedAt
+		};
+		const items = articles.map((a) => select(a, [
+			"id",
+			"title",
+			"desc",
+			"publishedAt"
+		]));
+		console.log(toMarkdown(meta));
+		if (items.length > 0) {
+			console.log("\n---\n");
+			console.log(toMarkdown(items));
+		}
+	}
+});
+//#endregion
+//#region src/commands/list-topics.ts
+const listTopicsCommand = defineCommand({
+	meta: { description: "List or search PANews topics (话题)" },
+	args: {
+		search: {
+			type: "string",
+			description: "Search by topic title or description"
+		},
+		take: {
+			type: "string",
+			description: "Number of results (max 100)",
+			default: "10"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "10");
+		const params = new URLSearchParams({ take: String(take) });
+		if (args.search) params.set("search", args.search);
+		const items = (await request(`/topics?${params}`, { lang })).map((t) => {
+			const tr = t.translations?.find((x) => x.lang === lang) ?? t.translations?.[0];
+			return {
+				id: t.id,
+				title: tr?.title || t.title,
+				desc: tr?.desc || t.desc,
+				comments: t.commentsCount,
+				favorites: t.favoritesCount
+			};
+		});
+		console.log(toMarkdown(items));
+	}
+});
+//#endregion
+//#region src/commands/get-topic.ts
+const getTopicCommand = defineCommand({
+	meta: { description: "Get topic details and latest comments" },
+	args: {
+		id: {
+			type: "positional",
+			description: "Topic ID",
+			required: true
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const topic = await request(`/topics/${args.id}?includeCommentsTake=10`, { lang });
+		const tr = topic.translations?.find((x) => x.lang === lang) ?? topic.translations?.[0];
+		const meta = {
+			id: topic.id,
+			title: tr?.title || topic.title,
+			desc: tr?.desc || topic.desc,
+			comments: topic.commentsCount,
+			favorites: topic.favoritesCount
+		};
+		console.log(toMarkdown(meta));
+		if (topic.comments && topic.comments.length > 0) {
+			console.log("\n---\n");
+			const commentItems = topic.comments.map((c) => ({
+				author: c.user?.profile?.name,
+				text: c.text,
+				createdAt: c.createdAt
+			}));
+			console.log(toMarkdown(commentItems));
+		}
+	}
+});
+//#endregion
 //#region src/panews.ts
 runMain(defineCommand({
 	meta: {
@@ -18505,7 +18752,13 @@ runMain(defineCommand({
 		"get-daily-must-reads": getDailyMustReadsCommand,
 		"get-rankings": getRankingsCommand,
 		"search-articles": searchArticlesCommand,
-		"get-article": getArticleCommand
+		"get-article": getArticleCommand,
+		"list-columns": listColumnsCommand,
+		"get-column": getColumnCommand,
+		"list-series": listSeriesCommand,
+		"get-series": getSeriesCommand,
+		"list-topics": listTopicsCommand,
+		"get-topic": getTopicCommand
 	}
 }));
 //#endregion
