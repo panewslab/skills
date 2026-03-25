@@ -3,7 +3,7 @@ name: panews-web-viewer
 description: Read public PANews website pages as Markdown. Use for homepage, article-page, and column-page reads.
 metadata:
   author: Seven Du
-  version: "2026.03.16"
+  version: "2026.03.25"
 ---
 
 This skill is for reading rendered PANews web pages as Markdown, including the homepage, article pages, and column pages. Use it when the user wants page content in a Markdown-friendly format with page metadata, rather than structured API fields or filtered search results.
