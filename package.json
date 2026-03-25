@@ -1,5 +1,5 @@
 {
-  "name": "@panews/cli",
+  "name": "@panews/agent-plugin",
   "type": "module",
   "private": true,
   "scripts": {
