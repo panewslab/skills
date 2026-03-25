@@ -2586,6 +2586,7 @@ async function request(path, options = {}) {
 		}));
 		process.exit(1);
 	}
+	if (res.status === 204) return null;
 	return res.json();
 }
 //#endregion

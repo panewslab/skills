@@ -42,5 +42,7 @@ export async function request<T>(
     process.exit(1);
   }
 
+  if (res.status === 204) return null as T;
+
   return res.json() as Promise<T>;
 }
