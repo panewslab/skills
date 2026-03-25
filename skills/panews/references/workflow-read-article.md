@@ -1,30 +1,30 @@
-# 读懂一篇文章
+# Understand an Article
 
-**触发**：用户给出一篇 PANews 文章的链接或 ID。
+**Trigger**: The user provides a PANews article link or article ID.
 
-## 识别文章 ID
+## Identify the Article ID
 
-PANews 文章 URL 格式：`https://www?.panewslab.com/{lang}?/{id}`
+PANews article URLs follow this format: `https://www?.panewslab.com/{lang}?/{id}`
 
-示例：
+Examples:
 - `https://www.panewslab.com/zh/abc123def`
 - `https://panewslab.com/en/abc123def`
-- `https://www.panewslab.com/abc123def`（无语言前缀）
+- `https://www.panewslab.com/abc123def` (without a language prefix)
 
-提取规则：取 URL 最后一段路径即为文章 ID。语言前缀（zh/en/ja 等）忽略。
-如果用户给的是纯 ID（非 URL），直接使用。
+Extraction rule: use the last path segment of the URL as the article ID. Ignore the language prefix (`zh`, `en`, `ja`, etc.).
+If the user provides a raw ID instead of a URL, use it directly.
 
-## 步骤
+## Steps
 
-### 1. 获取文章全文
+### 1. Fetch the full article
 
 ```bash
 node cli.mjs get-article <articleId> --lang <lang>
 ```
 
-### 2. 输出结构
+### 2. Output structure
 
-- **核心观点**：一句话
-- **主要内容**：3-5 个要点
-- **关键数据**：如有数字/数据，解释其意义（不只是照搬数字）
-- **为什么值得读**：这篇文章说了什么新的东西
+- **Core takeaway**: one sentence
+- **Main points**: 3 to 5 bullets
+- **Key data**: if the article includes numbers or data, explain what they mean instead of just repeating them
+- **Why it matters**: what new information or perspective the article provides

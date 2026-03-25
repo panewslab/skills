@@ -1,68 +1,68 @@
-# 发布新文章
+# Publish a New Article
 
-**触发**：用户想把一篇文章发布到 PANews。
+**Trigger**: User wants to publish an article to PANews.
 
-## 步骤
+## Steps
 
-### 0. （可选）发布前调研
+### 0. (Optional) Pre-publish research
 
-如果 panews skill 已安装，可在发布前搜索同类文章，帮用户找到差异化角度：
+If the panews skill is installed, search for similar articles before publishing to help the user find a differentiated angle:
 
 ```bash
-node {panews}/scripts/cli.mjs search-articles "<文章主题>" --take 3
+node {panews}/scripts/cli.mjs search-articles "<article topic>" --take 3
 ```
 
-如果 panews 未安装，跳过此步骤。
+Skip this step if panews is not installed.
 
-### 1. 验证身份并确认专栏
+### 1. Verify identity and confirm column
 
 ```bash
 node cli.mjs validate-session --session <token>
 ```
 
-从结果中取专栏列表：
-- 只有 1 个专栏 → 默认使用，告知用户
-- 多个专栏 → 列出让用户选择
-- 没有专栏 → 说明需先申请，参考 [workflow-apply-column](./workflow-apply-column.md)
+From the result, pick the column:
+- Only 1 column → use it by default, inform the user
+- Multiple columns → list them for the user to choose
+- No column → explain that one must be applied for first; see [workflow-apply-column](./workflow-apply-column.md)
 
-### 2. 收集文章信息
+### 2. Collect article info
 
-与用户确认以下字段（已提供则跳过）：
+Confirm the following fields with the user (skip if already provided):
 
-| 字段 | 必填 | 说明 |
-|------|------|------|
-| 标题 | 是 | 建议 20 字以内 |
-| 摘要 | 是 | 50-100 字 |
-| 正文 | 是 | Markdown 文件路径 |
-| 封面图 | 建议 | 本地图片先上传，或提供 CDN URL |
-| 标签 | 否 | 最多 5 个 tag ID |
-| 语言 | 否 | 默认 zh |
+| Field | Required | Notes |
+|-------|----------|-------|
+| Title | Yes | Recommended under 20 characters |
+| Summary | Yes | 50–100 characters |
+| Body | Yes | Path to a Markdown file |
+| Cover image | Recommended | Upload local images first, or provide a CDN URL |
+| Tags | No | Up to 5 tag IDs |
+| Language | No | Default: zh |
 
-不替用户生成正文内容。如果用户只有主题，先问正文是否已经写好。
+Do not generate body content on behalf of the user. If they only have a topic, ask whether the body is already written.
 
-### 3. 处理封面图（如有本地图片）
+### 3. Handle cover image (if local file)
 
 ```bash
 node cli.mjs upload-image <file-path> --session <token>
 ```
 
-输出的 URL 填入 `--cover`。
+Use the returned URL as the `--cover` value.
 
-### 4. 处理标签（可选）
+### 4. Handle tags (optional)
 
 ```bash
-node cli.mjs search-tags "<关键词>" --session <token>
+node cli.mjs search-tags "<keyword>" --session <token>
 ```
 
-展示结果让用户选择 tag ID。
+Show results for the user to select tag IDs.
 
-### 5. 创建文章（先存草稿）
+### 5. Create article (save as draft first)
 
 ```bash
 node cli.mjs create-article \
   --column-id <id> \
-  --title "<标题>" \
-  --desc "<摘要>" \
+  --title "<title>" \
+  --desc "<summary>" \
   --content-file <file.md> \
   --lang <lang> \
   --cover <url> \
@@ -71,8 +71,8 @@ node cli.mjs create-article \
   --session <token>
 ```
 
-### 6. 确认并提交
+### 6. Confirm and submit
 
-展示摘要（标题、摘要、标签、所属专栏），询问：
-- 直接提交审核 → 重新调用 `create-article --status PENDING`，或用 `update-article --status PENDING`
-- 先保存草稿 → 完成，告知文章 ID
+Show a summary (title, summary, tags, column), then ask:
+- Submit for review now → call `create-article --status PENDING`, or `update-article --status PENDING`
+- Save as draft → done, inform the user of the article ID

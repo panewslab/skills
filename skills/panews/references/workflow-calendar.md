@@ -1,33 +1,33 @@
-# 事件日历
+# Event Calendar
 
-**触发**：用户想查看加密行业近期重要事件、项目里程碑、宏观经济日程等日历条目。
-常见说法："最近有哪些重要事件"、"本月有什么大事"、"有没有关于 XX 的日程"。
+**Trigger**: User wants to check upcoming important events in the crypto space — project milestones, policy dates, macro economic schedules, etc.
+Common phrases: "Any important events coming up", "What's happening this month", "Any scheduled dates for XX".
 
-事件日历（calendar）与热门活动（events）的区别：
-- 事件日历 → 编辑整理的重要事件节点，涵盖项目发布、政策节点、宏观数据发布等
-- 热门活动 → 行业活动报名信息，如峰会、黑客松、路演
+Difference between event calendar and events:
+- Event calendar → editor-compiled event nodes: project launches, policy milestones, macro data releases, etc.
+- Events → industry event registrations: summits, hackathons, roadshows
 
-## 步骤
+## Steps
 
-### 1. 列出日历事件
+### 1. List calendar events
 
 ```bash
-node cli.mjs list-calendar-events [--search "<关键词>"] [--start-from <YYYY-MM-DD>] [--order asc|desc] [--take 20] --lang <lang>
+node cli.mjs list-calendar-events [--search "<keyword>"] [--start-from <YYYY-MM-DD>] [--order asc|desc] [--take 20] --lang <lang>
 ```
 
-默认按 `startAt` 升序（即最近的事件优先）排列，方便浏览即将发生的事件。
+Default order is ascending by `startAt` (nearest events first), ideal for browsing upcoming items.
 
-如需过去事件，传入 `--order desc`。
+For past events, pass `--order desc`.
 
-### 2. 过滤特定日期范围
+### 2. Filter a specific date range
 
 ```bash
 node cli.mjs list-calendar-events --start-from 2025-01-01 --order asc --take 20 --lang <lang>
 ```
 
-## 输出要求
+## Output requirements
 
-- 按日期排列，便于用户了解时间线
-- 标注每个事件的日期、标题、分类
-- 如关联了文章或活动，附上对应标题
-- 如有外部链接，一并展示
+- Order by date for a clear timeline view
+- Include date, title, and category for each event
+- If an article or activity is linked, include its title
+- Include external links where available

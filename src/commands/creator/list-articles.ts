@@ -42,7 +42,7 @@ export const creatorListArticlesCommand = defineCommand({
   async run({ args }) {
     const session = resolveSession(args.session)
     if (!session) {
-      console.error(JSON.stringify({ error: '未提供 session。' }))
+      console.error(JSON.stringify({ error: 'No session provided.' }))
       process.exit(1)
     }
 

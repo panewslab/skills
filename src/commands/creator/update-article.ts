@@ -32,7 +32,7 @@ export const updateArticleCommand = defineCommand({
   async run({ args }) {
     const session = resolveSession(args.session)
     if (!session) {
-      console.error(JSON.stringify({ error: '未提供 session。' }))
+      console.error(JSON.stringify({ error: 'No session provided.' }))
       process.exit(1)
     }
 
@@ -45,7 +45,7 @@ export const updateArticleCommand = defineCommand({
     if (args.status) body.status = ArticleStatusSchema.parse(args.status)
 
     if (Object.keys(body).length === 0) {
-      console.error(JSON.stringify({ error: '未提供任何要更新的字段。' }))
+      console.error(JSON.stringify({ error: 'No fields were provided to update.' }))
       process.exit(1)
     }
 

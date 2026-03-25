@@ -1,30 +1,30 @@
-# 浏览话题
+# Browse Topics
 
-**触发**：用户想参与或了解某个讨论话题，看看大家的观点。
-常见说法："PANews 有哪些话题在讨论"、"大家对比特币减半有什么看法"。
+**Trigger**: User wants to explore or join a discussion topic, see what people think.
+Common phrases: "What topics are being discussed on PANews", "What do people think about the Bitcoin halving".
 
-话题（topic）与专题（series）的区别：
-- 话题 → 社区讨论，有评论、投票，侧重观点交流
-- 专题 → 编辑策划的系列文章，侧重深度报道
+Difference between topic and series:
+- Topic → community discussion, comments, votes, focused on opinion exchange
+- Series → editor-curated set of articles, focused on in-depth reporting
 
-## 步骤
+## Steps
 
-### 1. 搜索或列出话题
+### 1. Search or list topics
 
 ```bash
-node cli.mjs list-topics --search "<关键词>" --take 10 --lang <lang>
+node cli.mjs list-topics --search "<keyword>" --take 10 --lang <lang>
 ```
 
-### 2. 查看某个话题详情和评论
+### 2. Get a topic's details and comments
 
 ```bash
 node cli.mjs get-topic <topicId> --lang <lang>
 ```
 
-输出话题描述及最新 10 条社区评论。
+Returns the topic description and the latest 10 community comments.
 
-## 输出要求
+## Output requirements
 
-- 简介话题背景
-- 整理评论中的主要观点（不展示全部原文，做归纳）
-- 如有明显分歧，点出正反两方的核心论点
+- Briefly introduce the topic background
+- Summarize the main viewpoints from comments (do not dump all raw text — synthesize)
+- If there are clear opposing camps, highlight the core arguments on each side

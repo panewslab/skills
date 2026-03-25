@@ -1,25 +1,25 @@
-# 发现热门
+# Discover Trending
 
-**触发**：用户想知道现在大家都在关注什么，没有具体话题。
-常见说法："现在大家都在讨论什么"、"最近热度最高的是什么"。
+**Trigger**: User wants to know what people are focusing on right now, no specific topic.
+Common phrases: "What is everyone talking about", "What has the highest buzz lately".
 
-## 步骤
+## Steps
 
-### 1. 获取 7 天搜索热门文章
+### 1. Get 7-day search trending articles
 
 ```bash
 node cli.mjs get-rankings --type weekly --take 5 --lang <lang>
 ```
 
-### 2. 获取 24 小时文章热榜
+### 2. Get 24-hour hot rankings
 
 ```bash
 node cli.mjs get-rankings --type daily --take 5 --lang <lang>
 ```
 
-### 3. 输出
+### 3. Output
 
-- **本周最受搜索**：前 3 篇文章，标题 + 一句话说明为什么受关注
-- **今日最受关注**：3 篇文章，标题 + 一句话简介
+- **Most searched this week**: top 3 articles, title + one sentence on why they're getting attention
+- **Most read today**: 3 articles, title + one-sentence summary
 
-如用户想深入某个热门话题，使用 [workflow-topic-research](./workflow-topic-research.md)。
+To deep dive into a trending topic, use [workflow-topic-research](./workflow-topic-research.md).

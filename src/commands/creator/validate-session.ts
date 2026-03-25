@@ -34,7 +34,7 @@ export const validateSessionCommand = defineCommand({
   async run({ args }) {
     const session = resolveSession(args.session)
     if (!session) {
-      console.error(JSON.stringify({ error: '未提供 session，请通过 --session 或环境变量 PANEWS_USER_SESSION 传入。' }))
+      console.error(JSON.stringify({ error: 'No session provided. Pass it with --session or the PANEWS_USER_SESSION environment variable.' }))
       process.exit(1)
     }
 

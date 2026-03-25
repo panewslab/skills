@@ -36,14 +36,14 @@ export const uploadImageCommand = defineCommand({
   async run({ args }) {
     const session = resolveSession(args.session)
     if (!session) {
-      console.error(JSON.stringify({ error: '未提供 session。' }))
+      console.error(JSON.stringify({ error: 'No session provided.' }))
       process.exit(1)
     }
 
     const ext = extname(args.file).toLowerCase()
     const contentType = MIME_MAP[ext]
     if (!contentType) {
-      console.error(JSON.stringify({ error: `不支持的文件类型 ${ext}，支持：png/jpg/gif/webp/avif` }))
+      console.error(JSON.stringify({ error: `Unsupported file type ${ext}. Supported types: png/jpg/gif/webp/avif` }))
       process.exit(1)
     }
 
@@ -61,7 +61,7 @@ export const uploadImageCommand = defineCommand({
     })
 
     if (res.status === 401) {
-      console.error(JSON.stringify({ error: 'Session 已失效或无效，请重新获取 PA-User-Session。' }))
+      console.error(JSON.stringify({ error: 'Session is expired or invalid. Please obtain a new PA-User-Session.' }))
       process.exit(1)
     }
 

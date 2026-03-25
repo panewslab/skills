@@ -28,7 +28,7 @@ interface CalendarEvent {
 
 export const listCalendarEventsCommand = defineCommand({
   meta: {
-    description: 'List PANews calendar events (事件日历)',
+    description: 'List PANews calendar events',
   },
   args: {
     search: {

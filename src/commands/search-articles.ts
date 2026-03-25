@@ -65,7 +65,7 @@ export const searchArticlesCommand = defineCommand({
     const articles: Article[] = raw.map((item) => item.article)
 
     if (articles.length === 0) {
-      console.log('_无结果_')
+      console.log('_No results_')
       return
     }
 

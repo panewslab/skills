@@ -1,35 +1,35 @@
-# 润色文章
+# Polish an Article
 
-**触发**：用户想改善文章质量。常见说法："帮我检查一下"、"帮我润色"、"这篇文章有没有问题"。
+**Trigger**: User wants to improve article quality. Common phrases: "Check this for me", "Polish this", "Are there any issues with this article".
 
-此 workflow 不调用任何命令，纯粹是 Claude 的文本处理能力。
+This workflow calls no CLI commands — it is purely Claude's text processing capability.
 
-## 步骤
+## Steps
 
-### 1. 获取文章内容
+### 1. Get the article content
 
-用户提供 Markdown 或 HTML 均可，纯文本也可。
+The user can provide Markdown, HTML, or plain text.
 
-### 2. 按维度审阅（只指出有问题的地方）
+### 2. Review by dimension (flag only issues)
 
-- **准确性**：有无明显事实错误或模糊表述
-- **结构**：逻辑是否清晰，段落是否通顺
-- **标题与内容**：标题是否准确反映内容
-- **摘要**：是否让读者快速判断是否值得读
-- **语言**：有无病句、歧义、过于生硬的表达
+- **Accuracy**: any obvious factual errors or vague claims
+- **Structure**: is the logic clear, do paragraphs flow
+- **Title vs. content**: does the title accurately reflect the content
+- **Summary**: does it help readers quickly decide if the article is worth reading
+- **Language**: any awkward sentences, ambiguity, or overly stiff expressions
 
-### 3. 输出格式
+### 3. Output format
 
-- 先给总体评价（1-2 句话）
-- 按维度列出具体建议，每条注明位置（第几段或哪句话）
-- 如有需要改写的句子，提供修改对比
+- Start with an overall assessment (1–2 sentences)
+- List specific suggestions by dimension, noting location (which paragraph or sentence)
+- Where rewriting is needed, provide a before/after comparison
 
-### 4. 询问后续
+### 4. Ask about next steps
 
-需要直接帮你改好，还是你自己调整？如果需要发布，自然衔接到 [workflow-publish](./workflow-publish.md)。
+Would you like me to rewrite it for you, or will you adjust it yourself? If ready to publish, transition naturally to [workflow-publish](./workflow-publish.md).
 
-## 原则
+## Principles
 
-- 尊重作者的观点和风格，只改表达问题，不改立场
-- 不主动建议删减核心内容
-- 不替用户发明新观点或数据
+- Respect the author's perspective and style — only fix expression issues, not positions
+- Do not proactively suggest cutting core content
+- Do not invent new arguments or data on behalf of the user

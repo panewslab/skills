@@ -1,33 +1,33 @@
-# 申请专栏
+# Apply for a Column
 
-**触发**：用户还没有专栏，或主动要求申请新专栏。
+**Trigger**: The user does not have a column yet, or explicitly asks to apply for a new one.
 
-## 步骤
+## Steps
 
-### 1. 告知需要准备
+### 1. Tell the user what they need to prepare
 
-- 专栏名称（简洁，体现定位）
-- 专栏简介（100-200 字，说明内容方向和更新计划）
-- 专栏封面图（本地图片需先上传）
-- 相关链接（个人主页、社交媒体，可选但建议填写）
+- Column name (short and clearly positioned)
+- Column description (100 to 200 words describing the content focus and publishing plan)
+- Column cover image (upload it first if it is a local file)
+- Related links (personal homepage, social media, optional but recommended)
 
-### 2. 上传封面图（如有本地图片）
+### 2. Upload the cover image if it is local
 
 ```bash
 node cli.mjs upload-image <file-path> --session <token>
 ```
 
-### 3. 提交申请
+### 3. Submit the application
 
 ```bash
 node cli.mjs apply-column \
-  --name "<专栏名称>" \
-  --desc "<专栏简介>" \
+  --name "<column name>" \
+  --desc "<column description>" \
   --picture <cover-url> \
   --links "https://twitter.com/xxx,https://..." \
   --session <token>
 ```
 
-### 4. 告知结果
+### 4. Report the result
 
-说明申请已提交，审核通常需要几个工作日，通过后即可开始发稿。
+Explain that the application has been submitted. Review usually takes a few business days, and publishing can begin after approval.

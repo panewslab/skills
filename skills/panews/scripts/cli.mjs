@@ -2575,7 +2575,7 @@ async function request(path, options = {}) {
 		body: body !== void 0 ? JSON.stringify(body) : void 0
 	});
 	if (res.status === 401) {
-		console.error(JSON.stringify({ error: "Session 已失效或无效，请重新获取 PA-User-Session。" }));
+		console.error(JSON.stringify({ error: "Session is expired or invalid. Please obtain a new PA-User-Session." }));
 		process.exit(1);
 	}
 	if (!res.ok) {
@@ -18451,7 +18451,7 @@ const searchArticlesCommand = defineCommand({
 			}
 		})).map((item) => item.article);
 		if (articles.length === 0) {
-			console.log("_无结果_");
+			console.log("_No results_");
 			return;
 		}
 		const items = articles.map((article) => select(article, [
@@ -18589,7 +18589,7 @@ const getColumnCommand = defineCommand({
 //#endregion
 //#region src/commands/list-series.ts
 const listSeriesCommand = defineCommand({
-	meta: { description: "List or search PANews series (专题)" },
+	meta: { description: "List or search PANews series" },
 	args: {
 		search: {
 			type: "string",
@@ -18624,7 +18624,7 @@ const listSeriesCommand = defineCommand({
 //#endregion
 //#region src/commands/get-series.ts
 const getSeriesCommand = defineCommand({
-	meta: { description: "Get series (专题) details and articles" },
+	meta: { description: "Get series details and articles" },
 	args: {
 		id: {
 			type: "positional",
@@ -18668,7 +18668,7 @@ const getSeriesCommand = defineCommand({
 //#endregion
 //#region src/commands/list-topics.ts
 const listTopicsCommand = defineCommand({
-	meta: { description: "List or search PANews topics (话题)" },
+	meta: { description: "List or search PANews topics" },
 	args: {
 		search: {
 			type: "string",
@@ -18771,7 +18771,7 @@ const EventCountrySchema = _enum([
 	"OTHER"
 ]);
 const listEventsCommand = defineCommand({
-	meta: { description: "List PANews events / activities (活动)" },
+	meta: { description: "List PANews events / activities" },
 	args: {
 		search: {
 			type: "string",
@@ -18835,7 +18835,7 @@ const listEventsCommand = defineCommand({
 //#endregion
 //#region src/commands/list-calendar-events.ts
 const listCalendarEventsCommand = defineCommand({
-	meta: { description: "List PANews calendar events (事件日历)" },
+	meta: { description: "List PANews calendar events" },
 	args: {
 		search: {
 			type: "string",

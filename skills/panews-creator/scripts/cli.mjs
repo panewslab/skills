@@ -397,7 +397,7 @@ async function request(path, options = {}) {
 		body: body !== void 0 ? JSON.stringify(body) : void 0
 	});
 	if (res.status === 401) {
-		console.error(JSON.stringify({ error: "Session 已失效或无效，请重新获取 PA-User-Session。" }));
+		console.error(JSON.stringify({ error: "Session is expired or invalid. Please obtain a new PA-User-Session." }));
 		process.exit(1);
 	}
 	if (!res.ok) {
@@ -16068,7 +16068,7 @@ const validateSessionCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session，请通过 --session 或环境变量 PANEWS_USER_SESSION 传入。" }));
+			console.error(JSON.stringify({ error: "No session provided. Pass it with --session or the PANEWS_USER_SESSION environment variable." }));
 			process.exit(1);
 		}
 		const user = await request("/user", { session });
@@ -18300,7 +18300,7 @@ const creatorListArticlesCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		const columnId = args["column-id"];
@@ -18450,7 +18450,7 @@ const createArticleCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		const content = renderToHtml(readFileSync(args["content-file"], "utf-8"));
@@ -18525,7 +18525,7 @@ const updateArticleCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		const body = {};
@@ -18536,7 +18536,7 @@ const updateArticleCommand = defineCommand({
 		if (args.tags) body.tags = args.tags.split(",").map((t) => t.trim()).filter(Boolean);
 		if (args.status) body.status = ArticleStatusSchema.parse(args.status);
 		if (Object.keys(body).length === 0) {
-			console.error(JSON.stringify({ error: "未提供任何要更新的字段。" }));
+			console.error(JSON.stringify({ error: "No fields were provided to update." }));
 			process.exit(1);
 		}
 		const article = await request(`/columns/${args["column-id"]}/articles/${args["article-id"]}`, {
@@ -18574,14 +18574,14 @@ const deleteArticleCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		await request(`/columns/${args["column-id"]}/articles/${args["article-id"]}`, {
 			session,
 			method: "DELETE"
 		});
-		console.log("已删除。");
+		console.log("Deleted.");
 	}
 });
 //#endregion
@@ -18615,13 +18615,13 @@ const uploadImageCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		const ext = extname(args.file).toLowerCase();
 		const contentType = MIME_MAP[ext];
 		if (!contentType) {
-			console.error(JSON.stringify({ error: `不支持的文件类型 ${ext}，支持：png/jpg/gif/webp/avif` }));
+			console.error(JSON.stringify({ error: `Unsupported file type ${ext}. Supported types: png/jpg/gif/webp/avif` }));
 			process.exit(1);
 		}
 		const fileData = readFileSync(args.file);
@@ -18636,7 +18636,7 @@ const uploadImageCommand = defineCommand({
 			body: fileData
 		});
 		if (res.status === 401) {
-			console.error(JSON.stringify({ error: "Session 已失效或无效，请重新获取 PA-User-Session。" }));
+			console.error(JSON.stringify({ error: "Session is expired or invalid. Please obtain a new PA-User-Session." }));
 			process.exit(1);
 		}
 		if (!res.ok) {
@@ -18779,7 +18779,7 @@ const applyColumnCommand = defineCommand({
 	async run({ args }) {
 		const session = resolveSession(args.session);
 		if (!session) {
-			console.error(JSON.stringify({ error: "未提供 session。" }));
+			console.error(JSON.stringify({ error: "No session provided." }));
 			process.exit(1);
 		}
 		const links = args.links.split(",").map((l) => l.trim()).filter(Boolean);
