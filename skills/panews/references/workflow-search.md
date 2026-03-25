@@ -1,41 +1,41 @@
-# 搜索
+# Search
 
-**触发**：用户想搜索某个关键词、项目、事件或话题相关的文章。
-常见说法："搜一下比特币 ETF 的文章"、"有没有关于 XX 的报道"、"找找 XX 相关的新闻"。
+**Trigger**: User wants to search for a keyword, project, event, or topic.
+Common phrases: "Search for Bitcoin ETF articles", "Any reports on XX", "Find news about XX".
 
-与其他场景的区别：
-- 搜索 → 用户主动输入关键词，查找匹配内容
-- 话题深挖（[workflow-topic-research](./workflow-topic-research.md)）→ 用户想全面了解某个主题，需要综合多种来源
-- 今日速览 → 关注当日最新内容
+Difference from other scenarios:
+- Search → user actively inputs keywords, finds matching content
+- Deep dive ([workflow-topic-research](./workflow-topic-research.md)) → user wants a comprehensive understanding of a topic from multiple sources
+- Today's briefing → focused on current day's latest content
 
-## 步骤
+## Steps
 
-### 1. （可选）获取热门搜索词作为灵感
+### 1. (Optional) Get hot search keywords for inspiration
 
-当用户没有明确关键词，或想发现热门话题时：
+When the user has no clear keyword or wants to discover trending topics:
 
 ```bash
 node cli.mjs get-hooks --category search-keywords --lang <lang>
 ```
 
-展示热门搜索词供用户选择。
+Present the hot keywords for the user to choose from.
 
-### 2. 执行搜索
+### 2. Execute the search
 
 ```bash
-node cli.mjs search-articles --query "<关键词>" [--mode SMART|EXACT] [--take 10] --lang <lang>
+node cli.mjs search-articles "<keyword>" [--mode SMART|EXACT] [--take 10] --lang <lang>
 ```
 
-**搜索模式**：
-- `SMART`（默认）— 语义搜索，适合自然语言描述
-- `EXACT` — 精确匹配，适合专有名词、项目名称
+**Search modes**:
+- `SMART` (default) — semantic search, good for natural language descriptions
+- `EXACT` — exact match, good for proper nouns and project names
 
-### 3. 深入某篇文章
+### 3. Deep dive into an article
 
-从搜索结果获取文章 ID，进入 [workflow-read-article](./workflow-read-article.md)。
+Get the article ID from the search results and go to [workflow-read-article](./workflow-read-article.md).
 
-## 输出要求
+## Output requirements
 
-- 列出搜索结果时附上标题、摘要、发布时间
-- 如果结果较少或不相关，提示用户换个关键词或切换搜索模式
-- 不对搜索结果以外的信息做补充
+- Include title, summary, and publish time with each result
+- If results are sparse or irrelevant, suggest trying different keywords or switching modes
+- Do not add information beyond the search results

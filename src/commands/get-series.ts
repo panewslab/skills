@@ -28,7 +28,7 @@ interface Article {
 
 export const getSeriesCommand = defineCommand({
   meta: {
-    description: 'Get series (专题) details and articles',
+    description: 'Get series details and articles',
   },
   args: {
     id: {

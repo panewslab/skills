@@ -1,32 +1,32 @@
-# 浏览最新资讯
+# Latest News
 
-**触发**：用户想快速看最新动态，例如：
-- "最新快讯"、"最近有什么新闻"、"刚发生了什么"
-- "给我看看今天的新闻"（未指定具体话题）
+**Trigger**: User wants to quickly scan the latest updates, for example:
+- "Latest news", "What's in the news recently", "What just happened"
+- "Show me today's news" (no specific topic)
 
-与"今日速览"的区别：
-- 今日速览 → 综合分析，有叙事，帮用户理解背景
-- 浏览最新资讯 → 直接列表，快速扫描，用户自己判断感兴趣的条目
+Difference from "Today's briefing":
+- Today's briefing → synthesized analysis with narrative, helps user understand context
+- Latest news → direct list, quick scan, user decides what they're interested in
 
-## 步骤
+## Steps
 
-根据用户意图选择类型：
-- "新闻" / "今日新闻" / 未指定 → `node cli.mjs list-articles --type NEWS`
-- "深度" / "分析文章" → `node cli.mjs list-articles --type NORMAL`
+Pick type based on user intent:
+- "news" / "today's news" / unspecified → `node cli.mjs list-articles --type NEWS`
+- "in-depth" / "analysis" → `node cli.mjs list-articles --type NORMAL`
 
 ```bash
 node cli.mjs list-articles --type NEWS --take 10 --lang <lang>
 ```
 
-## 输出
+## Output
 
-以简洁列表呈现，每条一行：
+Present as a concise list, one item per line:
 
 ```
-• [时间] 标题
-• [时间] 标题
+• [time] Title
+• [time] Title
 ...
 ```
 
-不需要摘要，不需要分析。如果用户对某条感兴趣，自然会追问，
-届时使用 [workflow-read-article](./workflow-read-article.md) 或 [workflow-topic-research](./workflow-topic-research.md) 深入。
+No summaries, no analysis. If the user is interested in an item they will follow up naturally —
+use [workflow-read-article](./workflow-read-article.md) or [workflow-topic-research](./workflow-topic-research.md) to go deeper.

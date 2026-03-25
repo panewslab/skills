@@ -45,7 +45,7 @@ interface Event {
 
 export const listEventsCommand = defineCommand({
   meta: {
-    description: 'List PANews events / activities (活动)',
+    description: 'List PANews events / activities',
   },
   args: {
     search: {

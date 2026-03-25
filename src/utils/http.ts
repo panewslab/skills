@@ -28,7 +28,7 @@ export async function request<T>(
   if (res.status === 401) {
     console.error(
       JSON.stringify({
-        error: "Session 已失效或无效，请重新获取 PA-User-Session。",
+        error: "Session is expired or invalid. Please obtain a new PA-User-Session.",
       }),
     );
     process.exit(1);

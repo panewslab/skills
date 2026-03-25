@@ -19,7 +19,7 @@ interface Series {
 
 export const listSeriesCommand = defineCommand({
   meta: {
-    description: 'List or search PANews series (专题)',
+    description: 'List or search PANews series',
   },
   args: {
     search: {

@@ -1,40 +1,40 @@
-# 今日速览
+# Today's Briefing
 
-**触发**：用户想知道今天或近期发生了什么，没有指定具体话题。
-常见说法："今天有什么大事"、"最近加密圈怎么了"、"帮我整理今日要闻"。
+**Trigger**: The user wants to know what happened today or recently without naming a specific topic.
+Common prompts include "What happened today?", "What's going on in crypto lately?", or "Summarize today's top news."
 
-与"浏览最新资讯"的区别：
-- 今日速览 → 综合分析，有叙事，帮用户理解背景和意义
-- 浏览最新资讯 → 直接列表，快速扫描，用户自己判断
+Difference from "browse latest news":
+- Today's briefing -> synthesized analysis with narrative and context
+- Browse latest news -> direct listing for fast scanning
 
-## 步骤
+## Steps
 
-### 1. 获取今日精选
+### 1. Fetch today's must-reads
 
 ```bash
 node cli.mjs get-daily-must-reads --lang <lang>
 ```
 
-### 2. 获取 24 小时文章热榜
+### 2. Fetch the 24-hour trending articles
 
 ```bash
 node cli.mjs get-rankings --type daily --take 10 --lang <lang>
 ```
 
-### 3. 综合整理
+### 3. Consolidate the results
 
-合并两个来源，去除重复，综合判断哪 3-5 条最值得关注。
+Combine both sources, remove duplicates, and decide which 3 to 5 items matter most.
 
-### 4. 输出简报
+### 4. Write the briefing
 
-结构如下：
+Use this structure:
 
-- 第一行：一句话概括今日市场氛围（平静 / 活跃 / 动荡）
-- 3-5 条新闻：标题 + 一句话"为什么重要"
-- 最后一行：「以上信息来自 PANews，更新于 [时间]」
+- First line: summarize today's market mood in one sentence (calm / active / volatile)
+- 3 to 5 news items: title plus one sentence on why it matters
+- Final line: "Source: PANews. Updated at [time]."
 
-## 输出要求
+## Output Requirements
 
-- 控制在 400 字以内
-- 专业术语首次出现时括号内附简短解释
-- 不展示原始 JSON，不展示文章 ID
+- Keep it within 400 words.
+- When a technical term first appears, add a short explanation in parentheses.
+- Do not show raw JSON or article IDs.

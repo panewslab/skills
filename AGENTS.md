@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-PANews Skills — 面向 PANews 平台的 Agent Skill 集合。每个 skill 是一份"菜谱"，告诉 Agent 如何为用户完成有价值的任务，而不是 API 调用说明书。
+PANews Skills is a collection of agent skills for the PANews platform. Each skill is a "recipe" that tells an agent how to complete a valuable user task, not an API reference.
 
 **Installation (end-user):**
 ```bash
@@ -15,29 +15,29 @@ npx skills add panewslab/skills
 
 ## Skills
 
-| Skill | 目标用户 | 用途 | 需要认证 |
+| Skill | Target User | Purpose | Auth Required |
 |-------|---------|------|---------|
-| `panews` | 普通读者 | 浏览、搜索、阅读加密货币新闻 | 否 |
-| `panews-creator` | 内容创作者 | 发布、管理、润色 PANews 文章 | 是（`PA-User-Session`） |
-| `panews-web-viewer` | — | 将 PANews 页面渲染为 Markdown | 否 |
+| `panews` | General readers | Browse, search, and read crypto news | No |
+| `panews-creator` | Content creators | Publish, manage, and polish PANews articles | Yes (`PA-User-Session`) |
+| `panews-web-viewer` | — | Render PANews pages as Markdown | No |
 
-## 文件结构
+## File Structure
 
 ```
-panews-skills/              # 根目录即 CLI 项目
+panews-skills/              # The repository root is the CLI project
 ├── src/
-│   ├── commands/           # 所有命令实现（不区分 skill 归属）
-│   ├── shared/             # 共享工具（HTTP、session、lang 等）
-│   ├── panews.ts           # 入口：注册读者相关命令，输出 panews skill bundle
-│   └── panews-creator.ts   # 入口：注册创作者相关命令，输出 creator skill bundle
-├── package.json            # tsdown 构建，直接输出到 skills/*/scripts/cli.mjs
+│   ├── commands/           # All command implementations, regardless of skill
+│   ├── shared/             # Shared utilities (HTTP, session, lang, etc.)
+│   ├── panews.ts           # Entry point: registers reader commands and outputs the panews skill bundle
+│   └── panews-creator.ts   # Entry point: registers creator commands and outputs the creator skill bundle
+├── package.json            # tsdown build config; outputs directly to skills/*/scripts/cli.mjs
 ├── tsdown.config.ts
 └── skills/
     ├── panews/
-    │   ├── SKILL.md            # 入口：描述 skill 能做什么，列出可用 workflow
-    │   ├── scripts/cli.mjs     # tsdown 输出，单文件，零外部依赖
+    │   ├── SKILL.md            # Entry file: describes what the skill can do and lists available workflows
+    │   ├── scripts/cli.mjs     # tsdown output, single file, zero external dependencies
     │   └── references/
-    │       └── workflow-*.md   # 每个用户场景的详细执行步骤
+    │       └── workflow-*.md   # Detailed execution steps for each user scenario
     └── panews-creator/
         ├── SKILL.md
         ├── scripts/cli.mjs
@@ -45,49 +45,49 @@ panews-skills/              # 根目录即 CLI 项目
             └── workflow-*.md
 ```
 
-**两层关系**：
-- `SKILL.md` → 索引，告诉 Claude 有哪些 workflow
-- `workflow-*.md` → 菜谱，描述如何完成一个用户任务，直接引用 CLI 命令
+**Two layers**:
+- `SKILL.md` -> the index that tells Claude which workflows exist
+- `workflow-*.md` -> the recipe that explains how to complete a user task and directly references CLI commands
 
-**不需要 `api.md`**：CLI 的 Zod schema 本身就是字段约束的来源，字段要求、类型、可选/必填全在代码里定义。Claude 看 workflow 里的命令调用，Zod 的报错会告诉它哪里出了问题。
+**No `api.md` needed**: the CLI's Zod schemas are already the source of truth for field constraints. Required and optional fields, types, and validation all live in code. Claude should follow the commands shown in each workflow, and Zod errors will indicate what is wrong.
 
-## Skill 维护规范
+## Skill Maintenance Rules
 
-**编写或修改一个 workflow 时，按以下顺序进行：**
+**When writing or updating a workflow, follow this order:**
 
-1. **先写 workflow**（`references/workflow-*.md`）：以用户意图为出发点，描述步骤和输出要求
-2. **确定需要哪些 CLI 命令**：从 workflow 步骤归纳需要哪些命令和参数
-3. **在 CLI 里实现命令**（`cli/src/`）：含 Zod schema 验证、业务逻辑
-4. **更新 bundle**：`cli/dist/panews.js` 是最终交付给 Agent 调用的文件
+1. **Write the workflow first** (`references/workflow-*.md`): start from user intent and describe the steps and output requirements.
+2. **Determine which CLI commands are needed**: derive the required commands and parameters from the workflow steps.
+3. **Implement the commands in the CLI** (`cli/src/`): include Zod schema validation and business logic.
+4. **Update the bundle**: `cli/dist/panews.js` is the final artifact delivered for agent use.
 
-## 脚本约定
+## Script Conventions
 
-- 每个 skill 的 `scripts/cli.mjs` 是 tsdown 打包的单文件产物，含所有依赖（zod、md4x 等），零外部依赖
-- 源码在 `src/` 中用 TypeScript 编写，`src/utils/` 存放共享工具：
-  - `http.ts` — fetch 封装，统一处理 401 和错误
-  - `session.ts` — 环境变量 session 解析链
-  - `lang.ts` — `@panews/lang` 的 Zod schema
-  - `format.ts` — `select`/`omit` 字段过滤，`htmlToMarkdown` HTML 转 Markdown（via turndown），`toMarkdown` 对象转 AI 友好 Markdown
-- 参数：按复杂度选择传参方式
-  - 简单脚本（单个或少量参数）：位置参数，如 `get-article.mjs <id>`
-  - 复杂脚本（多字段、含可选项）：接受 JSON 字符串或 JSON 文件路径，如 `create-article.mjs '{"title":"..."}' ` 或 `create-article.mjs payload.json`
-- 输出：JSON pretty-print 到 stdout；错误 JSON 到 stderr，非零退出码
-- API base：`https://universal-api.panewslab.com`（panews / panews-creator），`https://www.panewslab.com`（web-viewer）
-- 语言：`--lang` 默认 `zh`，支持 `zh`、`zh-hant`、`en`、`ja`、`ko`
+- Each skill's `scripts/cli.mjs` is a single-file bundle produced by tsdown, including all dependencies (`zod`, `md4x`, etc.) with zero external runtime dependencies.
+- Source code is written in TypeScript under `src/`, and `src/utils/` stores shared utilities:
+  - `http.ts` -> fetch wrapper that handles 401 responses and errors consistently
+  - `session.ts` -> environment-variable session resolution chain
+  - `lang.ts` -> Zod schema for `@panews/lang`
+  - `format.ts` -> field filtering with `select`/`omit`, `htmlToMarkdown` for HTML-to-Markdown conversion via turndown, and `toMarkdown` for AI-friendly Markdown output
+- Parameters: choose the argument style based on complexity
+  - Simple scripts (one or a few arguments): positional arguments, for example `get-article.mjs <id>`
+  - Complex scripts (many fields, optional fields): accept a JSON string or JSON file path, for example `create-article.mjs '{"title":"..."}'` or `create-article.mjs payload.json`
+- Output: pretty-printed JSON to stdout; error JSON to stderr; non-zero exit code on failure
+- API base: `https://universal-api.panewslab.com` for `panews` / `panews-creator`, and `https://www.panewslab.com` for `web-viewer`
+- Languages: `--lang` defaults to `zh`; supported values are `zh`, `zh-hant`, `en`, `ja`, and `ko`
 
-## Session 认证（panews-creator）
+## Session Authentication (`panews-creator`)
 
-解析顺序：`--session` flag → `PANEWS_USER_SESSION` → `PA_USER_SESSION` → `PA_USER_SESSION_ID`
+Resolution order: `--session` flag -> `PANEWS_USER_SESSION` -> `PA_USER_SESSION` -> `PA_USER_SESSION_ID`
 
-所有操作前先调用 `validate-session.mjs` 验证。401 立即停止。
+Run `validate-session.mjs` before any operation. Stop immediately on 401.
 
-## 内容格式（panews-creator）
+## Content Format (`panews-creator`)
 
-正文必须是 HTML。流程：用户写 Markdown → `bunx md4x <file>.md -t html -o <file>.html` → 传 HTML 文件路径给脚本。
+Article bodies must be HTML. Flow: user writes Markdown -> `bunx md4x <file>.md -t html -o <file>.html` -> pass the HTML file path to the script.
 
-## 无构建/测试基础设施
+## Lightweight Tooling
 
-无 package.json、构建步骤、测试框架或 linter。脚本直接运行：
+There is no dedicated test framework or linter in this repository. Scripts can be run directly:
 ```bash
 node skills/panews/scripts/search-articles.mjs "bitcoin"
 ```

@@ -1,31 +1,31 @@
-# 浏览专题
+# Browse Series
 
-**触发**：用户想了解某个长期追踪的议题或系列报道。
-常见说法："PANews 有没有关于 Layer2 的专题"、"有哪些系列报道"、"这个专题讲了什么"。
+**Trigger**: User wants to explore a long-running topic or a series of reports.
+Common phrases: "Does PANews have a series on Layer2", "What series are there", "What is this series about".
 
-## 步骤
+## Steps
 
-### 1. 搜索或列出专题
+### 1. Search or list series
 
 ```bash
-node cli.mjs list-series --search "<关键词>" --take 10 --lang <lang>
+node cli.mjs list-series --search "<keyword>" --take 10 --lang <lang>
 ```
 
-不传 `--search` 则按最新发文时间列出所有专题。
+Omitting `--search` lists all series ordered by latest post time.
 
-### 2. 查看某个专题的文章
+### 2. Get a series' articles
 
 ```bash
 node cli.mjs get-series <seriesId> --take 10 --lang <lang>
 ```
 
-输出专题介绍及文章列表（按发布时间倒序）。
+Returns the series intro and article list (newest first).
 
-### 3. 深入某篇文章
+### 3. Deep dive into an article
 
-文章 ID 从上一步获取，走 [workflow-read-article](./workflow-read-article.md)。
+Get the article ID from the previous step and go to [workflow-read-article](./workflow-read-article.md).
 
-## 注意
+## Notes
 
-- 专题（series）是编辑策划的系列报道，有明确的主题线索
-- 与"话题深挖"的区别：话题深挖是关键词搜索，专题是编辑整理好的系列
+- A series is an editor-curated set of reports with a clear thematic thread
+- Difference from "deep dive": deep dive is keyword search; a series is pre-organized editorial content

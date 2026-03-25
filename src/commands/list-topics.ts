@@ -23,7 +23,7 @@ interface Topic {
 
 export const listTopicsCommand = defineCommand({
   meta: {
-    description: 'List or search PANews topics (话题)',
+    description: 'List or search PANews topics',
   },
   args: {
     search: {

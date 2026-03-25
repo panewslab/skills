@@ -1,25 +1,25 @@
-# 管理我的文章
+# Manage My Articles
 
-**触发**：用户想查看稿件状态或了解有哪些文章。
+**Trigger**: User wants to check submission status or see their articles.
 
-## 步骤
+## Steps
 
-### 1. 获取所有文章
+### 1. Fetch all articles
 
 ```bash
 node cli.mjs list-articles --column-id <id> --take 50 --session <token>
 ```
 
-### 2. 按状态分组输出
+### 2. Group output by status
 
-| 状态 | 含义 | 可执行操作 |
-|------|------|-----------|
-| DRAFT | 草稿，未提交 | 编辑、提交审核、删除 |
-| PENDING | 审核中 | 仅查看 |
-| PUBLISHED | 已发布 | 仅查看 |
-| REJECTED | 被拒稿 | 编辑后重新提交 |
+| Status | Meaning | Available actions |
+|--------|---------|------------------|
+| DRAFT | Draft, not yet submitted | Edit, submit for review, delete |
+| PENDING | Under review | View only |
+| PUBLISHED | Published | View only |
+| REJECTED | Rejected | Edit and resubmit |
 
-### 3. 主动提示
+### 3. Proactively prompt
 
-如有 REJECTED 状态的文章：
-「有 X 篇被拒稿，需要修改后重新提交，需要我帮你处理吗？」→ 参考 [workflow-revise](./workflow-revise.md)
+If there are REJECTED articles:
+"You have X rejected article(s). Would you like me to help revise and resubmit?" → see [workflow-revise](./workflow-revise.md)

@@ -14,7 +14,7 @@ export const deleteArticleCommand = defineCommand({
   async run({ args }) {
     const session = resolveSession(args.session)
     if (!session) {
-      console.error(JSON.stringify({ error: '未提供 session。' }))
+      console.error(JSON.stringify({ error: 'No session provided.' }))
       process.exit(1)
     }
 
@@ -23,6 +23,6 @@ export const deleteArticleCommand = defineCommand({
       { session, method: 'DELETE' },
     )
 
-    console.log('已删除。')
+    console.log('Deleted.')
   },
 })

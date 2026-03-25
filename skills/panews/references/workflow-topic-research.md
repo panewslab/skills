@@ -1,38 +1,38 @@
-# 话题深挖
+# Deep Topic Research
 
-**触发**：用户提到一个具体话题、项目名称、代币或事件。
-常见说法："比特币最近怎么样"、"以太坊有什么新进展"、"帮我了解 XX 项目"。
+**Trigger**: The user mentions a specific topic, project name, token, or event.
+Common prompts include "What's new with Bitcoin?", "What progress has Ethereum made lately?", or "Help me understand project XX."
 
-## 步骤
+## Steps
 
-### 1. 搜索相关文章（相关性优先）
+### 1. Search for related articles first by relevance
 
 ```bash
-node cli.mjs search-articles "<用户关键词>" --mode hit --take 5 --lang <lang>
+node cli.mjs search-articles "<user keyword>" --mode hit --take 5 --lang <lang>
 ```
 
-### 2. 评估相关性
+### 2. Evaluate relevance
 
-浏览返回的标题和摘要：
-- 高度相关（标题/摘要直接涉及该话题）→ 进入下一步
-- 结果为空或相关性低 → 直接告知用户，不继续
+Review the returned titles and summaries:
+- Highly relevant (the title or summary is directly about the topic) -> continue
+- Empty or weakly relevant results -> tell the user directly and stop
 
-### 3. 获取 2-3 篇最相关文章的全文
+### 3. Fetch the full text of the 2 to 3 most relevant articles
 
 ```bash
 node cli.mjs get-article <id> --lang <lang>
 ```
 
-### 4. 综合输出
+### 4. Synthesize the output
 
-- **背景**：这个话题是什么（一段话）
-- **最新进展**：近期发生了什么
-- **不同声音**：有争议或多方观点时列出
-- **延伸阅读**：相关文章标题 + 链接（最多 3 条）
+- **Background**: what this topic is, in one short paragraph
+- **Latest developments**: what has happened recently
+- **Different viewpoints**: list disagreements or multiple perspectives when relevant
+- **Further reading**: article titles plus links, up to 3 items
 
-链接格式：`https://www.panewslab.com/zh/<id>`
+Link format: `https://www.panewslab.com/zh/<id>`
 
-## 注意
+## Notes
 
-- 不编造 PANews 没有报道的内容
-- 如果用户的问题涉及价格预测，说明不做此类判断，但可以提供相关新闻背景
+- Do not invent information that PANews has not reported.
+- If the user asks for price predictions, say that you do not make those judgments, but you can provide relevant news background.

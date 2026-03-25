@@ -1,39 +1,39 @@
-# 修改并重新提交
+# Revise and Resubmit
 
-**触发**：用户想修改草稿或被拒稿，重新提交。
+**Trigger**: The user wants to revise a draft or rejected article and submit it again.
 
-## 步骤
+## Steps
 
-### 1. 确定目标文章
+### 1. Identify the target article
 
-如果用户没有指定文章：
+If the user has not specified the article:
 
 ```bash
 node cli.mjs list-articles --column-id <id> --status DRAFT --take 20 --session <token>
 node cli.mjs list-articles --column-id <id> --status REJECTED --take 20 --session <token>
 ```
 
-列出结果让用户选择。
+List the results and let the user choose.
 
-### 2. 修改文章
+### 2. Update the article
 
-根据用户的修改意见，更新对应字段：
+Update the relevant fields based on the user's requested changes:
 
 ```bash
 node cli.mjs update-article \
   --column-id <id> \
   --article-id <id> \
-  --title "<新标题>" \
-  --desc "<新摘要>" \
-  --content-file <新内容.html> \
+  --title "<new title>" \
+  --desc "<new summary>" \
+  --content-file <new-content.html> \
   --session <token>
 ```
 
-只传需要修改的字段，其余字段不传。
+Pass only the fields that need to change.
 
-### 3. 提交审核
+### 3. Submit for review
 
-询问是否直接提交审核：
+Ask whether the user wants to submit it for review immediately:
 
 ```bash
 node cli.mjs update-article \
