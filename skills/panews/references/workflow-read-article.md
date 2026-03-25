@@ -4,7 +4,7 @@
 
 ## Identify the Article ID
 
-PANews article URLs follow this format: `https://www?.panewslab.com/{lang}?/{id}`
+PANews article URLs typically follow this format: `https://www.panewslab.com/{lang}/{id}`
 
 Examples:
 - `https://www.panewslab.com/zh/abc123def`

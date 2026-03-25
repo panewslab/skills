@@ -30,7 +30,7 @@ node cli.mjs get-article <id> --lang <lang>
 - **Different viewpoints**: list disagreements or multiple perspectives when relevant
 - **Further reading**: article titles plus links, up to 3 items
 
-Link format: `https://www.panewslab.com/zh/<id>`
+Link format: `https://www.panewslab.com/<lang>/<id>`
 
 ## Notes
 

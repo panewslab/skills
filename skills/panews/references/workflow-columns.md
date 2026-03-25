@@ -1,6 +1,6 @@
 # Browse Columns
 
-**Trigger**: User wants to explore a column, subscribe to one, or browse articles from a column.
+**Trigger**: User wants to explore a column or browse articles from a column.
 Common phrases: "What columns does PANews have", "Any columns about DeFi", "What has this column written about".
 
 ## Steps
