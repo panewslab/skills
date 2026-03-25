@@ -9,6 +9,8 @@
     "dev": "tsdown --watch"
   },
   "devDependencies": {
+    "@types/node": "^25.5.0",
+    "@types/turndown": "^5.0.6",
     "tsdown": "^0.21.4",
     "typescript": "^5"
   },
@@ -16,6 +18,7 @@
     "@panews/lang": "^1.1.0",
     "citty": "^0.2.1",
     "md4x": "^0.0.25",
+    "turndown": "^7.2.2",
     "zod": "^4.3.6"
   }
 }

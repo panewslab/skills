@@ -1,79 +1,34 @@
 ---
 name: panews
-description: Query the public PANews API for the currently bundled read-only workflows, article search, listings, rankings, and daily must-reads.
+description: >
+  当用户想了解加密货币或区块链相关新闻时使用。
+  包括：了解今日行业动态、搜索某个话题或项目的报道、
+  查看热门文章和趋势、阅读并理解一篇具体的文章。
 metadata:
   author: Seven Du
-  version: "2026.03.16"
 ---
 
-Public read-only PANews content via `https://universal-api.panewslab.com`. Set the `PA-Accept-Language` request header to localize responses.
+你是用户了解加密货币世界的向导。用户可能不懂技术，用通俗易懂的语言帮助他们。
 
-Current first-class support in this skill is limited to the bundled scripts below. Other public endpoints may appear in references as HTTP notes, but they are not part of the default supported workflow unless scripts are added later.
+## 可用能力
 
-## When to Use
+| 场景 | 触发意图 | 参考 |
+|------|---------|------|
+| 今日速览 | 今天有什么大事？最近加密圈怎么了？ | workflow-today-briefing |
+| 话题深挖 | 比特币/某项目/某事件 最近怎么样？ | workflow-topic-research |
+| 读懂一篇文章 | 用户给出文章链接或 ID | workflow-read-article |
+| 发现热门 | 现在大家都在讨论什么？ | workflow-trending |
+| 浏览最新资讯 | 最新快讯 / 刚发生了什么 | workflow-latest-news |
 
-- The user wants structured JSON data from the PANews API
-- The task is article discovery, article detail lookup, rankings, or daily must-reads
-- The caller needs stable filters such as `columnId`, `tagId`, `authorId`, or article type
+## 通用原则
 
-## Do Not Use When
+- 语言默认中文，用户用其他语言提问则匹配用户语言
+- 不对价格走势做预测，不做投资建议
+- 内容严格来自 PANews，不添加 PANews 没有报道的信息
+- 需要发布内容时，使用 panews-creator skill
 
-- The user wants the rendered website page body or layout-aware Markdown output
-- The task requires authentication, publishing, or creator-only routes
-- The request is really about a PANews web URL rather than API data
-
-## Standard Workflow
-
-Copy this checklist and work through it:
-
-```text
-PANews Read Progress:
-- [ ] Step 1: Decide API JSON vs website Markdown
-- [ ] Step 2: Set locale (default: zh)
-- [ ] Step 3: Pick the narrowest bundled script that matches the task
-- [ ] Step 4: Retry once with a broader query if results are empty
-- [ ] Step 5: Return the result with any filters or caveats called out
-```
-
-## Language
-
-| Language            | Header value |
-| ------------------- | ------------ |
-| Simplified Chinese  | `zh`         |
-| Traditional Chinese | `zh-hant`    |
-| English             | `en`         |
-| Japanese            | `ja`         |
-| Korean              | `ko`         |
-
-## Rules
-
-- Always use `POST /search/articles` for keyword search — never `GET /articles?search=...`
-- Default `mode=hit`; use `mode=time` only when the user explicitly wants newest results
-- Default article types `NORMAL,NEWS`; add `VIDEO` only when the user explicitly asks
-- This skill is read-only — for article creation and publishing use `panews-creator`
-- Prefer bundled scripts before falling back to ad hoc HTTP requests
-- Treat reference-only endpoints as optional HTTP notes, not as default supported workflows
-
-## Failure Handling
-
-- If a search query returns no results, retry once with a broader keyword or fewer filters
-- If article detail returns `404`, report the article as unavailable instead of silently switching sources
-- If the request is really for a public webpage, route to `panews-web-viewer`
-
-## Scripts
+## CLI
 
 ```bash
-node {Skills Directory}/panews/scripts/search-articles.mjs <query> [--mode hit|time] [--type NORMAL,NEWS] [--take 10] [--skip 0] [--lang zh]
-node {Skills Directory}/panews/scripts/list-articles.mjs [--type NORMAL|NEWS|VIDEO] [--column-id <id>] [--tag-id <id>] [--author-id <id>] [--is-featured] [--take 10] [--skip 0] [--lang zh]
-node {Skills Directory}/panews/scripts/get-article.mjs <articleId> [--related] [--lang zh]
-node {Skills Directory}/panews/scripts/get-daily-must-reads.mjs [--date YYYY-MM-DD] [--special] [--lang zh]
-node {Skills Directory}/panews/scripts/get-rankings.mjs [--weekly] [--lang zh]
+node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang zh]
 ```
-
-## References
-
-| Topic     | Description                                                              | Reference                            |
-| --------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| Workflows | Task routing, defaults, and empty-result handling                        | [workflows](references/workflows.md) |
-| Articles  | Search, list, detail, related articles, and rankings                     | [articles](references/articles.md)   |
-| Content   | Daily must-reads plus reference-only notes for adjacent public endpoints | [content](references/content.md)     |

@@ -7,7 +7,7 @@ export default defineConfig([
     outDir: 'skills/panews/scripts',
     format: 'esm',
     platform: 'node',
-    deps: { alwaysBundle: ['*'], onlyBundle: false },
+    deps: { alwaysBundle: ['*', '*/*'], onlyBundle: false },
   },
   {
     name: 'panews-creator',
@@ -15,6 +15,6 @@ export default defineConfig([
     outDir: 'skills/panews-creator/scripts',
     format: 'esm',
     platform: 'node',
-    deps: { alwaysBundle: ['*'], onlyBundle: false },
+    deps: { alwaysBundle: ['*', '*/*'], onlyBundle: false },
   },
 ])
