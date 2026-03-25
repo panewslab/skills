@@ -1,50 +1,56 @@
-This file provides guidance to AI agents (Claude Code, Codex, Copilot, etc.) when working with code in this repository.
+## Overview
 
-## Creating a New Skill
+This repository contains Agent Skills for the PANews platform — a crypto/blockchain news service. Skills are collections of Node.js scripts plus reference documentation that enable AI agents to interact with PANews APIs.
 
-### Directory Structure
+**Installation (end-user):**
 
-```text
-skills/
-  {skill-name}/                 # kebab-case directory name
-    SKILL.md                    # Required: skill definition
-    references/                 # Optional: reference documents
-      {topic}.md
-    scripts/                    # Optional: executable scripts
-      {script-name}.{mjs|py|sh} # Script entry points
+```bash
+bunx skills add panewslab/skills
+# or
+npx skills add panewslab/skills
 ```
 
-### Naming Conventions
+## Skills
 
-- Skill directory: kebab-case (e.g., `panews-creator`, `log-monitor`)
-- `SKILL.md`: always uppercase, always this exact filename
-- Scripts: kebab-case `.mjs` (e.g., `get-article.mjs`, `upload-image.mjs`)
-- References: kebab-case `.md` (e.g., `session-resolution.md`, `article-workflow.md`)
+| Skill               | Purpose                                                   | Auth Required           |
+| ------------------- | --------------------------------------------------------- | ----------------------- |
+| `panews`            | Read-only public API (search, list, get articles)         | No                      |
+| `panews-creator`    | Authenticated creator API (full CRUD on articles, images) | Yes (`PA-User-Session`) |
+| `panews-web-viewer` | Fetch PANews web pages as Markdown                        | No                      |
 
-### SKILL.md Format
+## Architecture
 
-```markdown
----
-name: <skill-name>
-description: <One sentence describing when to use this skill.>
-metadata:
-  author: <Author Name>
-  version: "<YYYY.MM.DD>"
----
+Each skill lives under `skills/<skill-name>/` with this structure:
 
-## <Section>
+- `SKILL.md` — skill description and invocation instructions
+- `agents/openai.yaml` — OpenAI agent metadata (`display_name`, `short_description`, `default_prompt`, `policy`)
+- `scripts/*.mjs` — executable Node.js ESM scripts (no dependencies, use native `fetch`)
+- `references/*.md` — reference docs for API endpoints, workflows, auth, content formats
 
-<Rules or notes for this section.>
+### Script Conventions
 
-## Scripts
+All scripts follow a uniform pattern:
 
-\`\`\`bash
-{Skills Directory}/{skill-name}/scripts/{script}.mjs
-\`\`\`
+- **Argument parsing**: Manual flag parsing (no CLI framework); kebab-case flags → camelCase for API bodies
+- **Output**: Pretty-printed JSON to stdout; errors as JSON to stderr with non-zero exit code
+- **API base**: `https://universal-api.panewslab.com` (panews/panews-creator), `https://www.panewslab.com` (web-viewer)
+- **Language**: `--lang` flag, defaults to `zh`; supports `zh`, `zh-hant`, `en`, `ja`, `ko`
+- **Pagination**: `--take` (page size, default 10), `--skip` (offset)
 
-## References
+### Session Auth (`panews-creator`)
 
-| Topic      | Description                | Reference                       |
-| ---------- | -------------------------- | ------------------------------- |
-| Topic Name | What this reference covers | [link-name](references/file.md) |
+Session resolution order: `--session` flag → `PANEWS_USER_SESSION` → `PA_USER_SESSION` → `PA_USER_SESSION_ID` env var.
+
+Always validate with `GET /user` before mutations. Treat 401 as a hard stop.
+
+### Content Format (`panews-creator`)
+
+Articles require HTML content. The workflow is: write Markdown → convert via `md4x` tool → pass the output HTML file path to `create-article.mjs` or `update-article.mjs`.
+
+## No Build/Test Infrastructure
+
+There is no package.json, build step, test framework, or linter. Scripts run directly:
+
+```bash
+node skills/panews/scripts/search-articles.mjs --query "bitcoin"
 ```
