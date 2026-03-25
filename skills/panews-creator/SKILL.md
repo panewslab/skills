@@ -56,7 +56,9 @@ For `create-article`, `--lang` indicates the **article content language** — pa
   - Before moving an article to `PENDING`, make sure the user intends to submit it for review now.
   - Treat image upload and tag search as support steps for PANews publishing workflows, not as unrelated generic utilities.
 
-## CLI
+## Scripts
+
+- `scripts/cli.mjs`: unified entrypoint for PANews creator commands
 
 ```bash
 node {Skills Directory}/panews-creator/scripts/cli.mjs <command> [options]
@@ -71,7 +73,7 @@ node {Skills Directory}/panews-creator/scripts/cli.mjs <command> --help
 
 Available commands:
 
-```
+```text
   validate-session    Validate session and list owned columns
      list-articles    List articles in a column
     create-article    Create an article in a column
