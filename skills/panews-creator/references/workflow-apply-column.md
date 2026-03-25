@@ -14,8 +14,11 @@
 ### 2. Upload the cover image if it is local
 
 ```bash
-node cli.mjs upload-image <file-path> --session <token>
+export PA_USER_SESSION="<token>"
+node cli.mjs upload-image <file-path>
 ```
+
+Security note: do not pass session tokens on the command line, because they may be exposed in shell history or process lists. Prefer environment variables or a secure credential store.
 
 ### 3. Submit the application
 
@@ -24,9 +27,10 @@ node cli.mjs apply-column \
   --name "<column name>" \
   --desc "<column description>" \
   --picture <cover-url> \
-  --links "https://twitter.com/xxx,https://..." \
-  --session <token>
+  --links "https://twitter.com/xxx,https://..."
 ```
+
+Use `export`, `direnv`, or a secret manager to provide `PA_USER_SESSION` without hardcoding it into commands.
 
 ### 4. Report the result
 
