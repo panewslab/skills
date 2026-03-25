@@ -41,6 +41,14 @@ It is best suited for structured news discovery and explanation. The skill shoul
 - Content strictly from PANews — do not add information PANews has not reported
 - For publishing content, use the panews-creator skill
 
+## Execution guidance
+
+- Use judgment for open-ended discovery tasks such as briefings, topic research, and trend summaries. Multiple valid paths are acceptable if the result stays grounded in PANews coverage.
+- Be more specific for fragile tasks:
+  - If the user provides an article URL or ID, resolve the article directly instead of broadening into generic search.
+  - If the task is rankings, events, calendar items, or platform picks, use the most direct matching workflow instead of combining unrelated workflows first.
+  - If PANews coverage is weak or missing, say so directly rather than filling gaps with outside knowledge.
+
 ## Language
 
 All CLI commands support `--lang`, accepting standard locale strings (e.g. `zh`, `en`, `zh-TW`, `en-US`, `ja-JP`), automatically mapped to the nearest supported language. If omitted, the system locale is auto-detected. Match `--lang` to the user's question language.

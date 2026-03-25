@@ -44,6 +44,17 @@ For `create-article`, `--lang` indicates the **article content language** — pa
 - Require explicit confirmation before any delete operation
 - Do not modify the user's article content or opinions unprompted
 
+## Execution guards
+
+- Use more freedom for low-risk tasks such as polishing copy, suggesting improvements, or helping the user prepare content before submission.
+- Use strict procedure for high-risk creator actions:
+  - Before any create, update, delete, submit, or column-application action, validate that a usable `PA-User-Session` is available.
+  - On any 401 response, stop immediately and ask the user to refresh the session before continuing.
+  - Before deletion, obtain explicit user confirmation for the exact target article.
+  - When updating an article, change only the fields the user asked to modify.
+  - Before moving an article to `PENDING`, make sure the user intends to submit it for review now.
+  - Treat image upload and tag search as support steps for PANews publishing workflows, not as unrelated generic utilities.
+
 ## CLI
 
 ```bash
