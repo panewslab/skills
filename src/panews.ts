@@ -11,6 +11,8 @@ import { listSeriesCommand } from './commands/list-series.ts'
 import { getSeriesCommand } from './commands/get-series.ts'
 import { listTopicsCommand } from './commands/list-topics.ts'
 import { getTopicCommand } from './commands/get-topic.ts'
+import { listEventsCommand } from './commands/list-events.ts'
+import { listCalendarEventsCommand } from './commands/list-calendar-events.ts'
 
 const main = defineCommand({
   meta: {
@@ -29,6 +31,8 @@ const main = defineCommand({
     'get-series': getSeriesCommand,
     'list-topics': listTopicsCommand,
     'get-topic': getTopicCommand,
+    'list-events': listEventsCommand,
+    'list-calendar-events': listCalendarEventsCommand,
   },
 })
 

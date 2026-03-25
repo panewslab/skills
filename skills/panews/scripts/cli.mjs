@@ -18741,6 +18741,158 @@ const getTopicCommand = defineCommand({
 	}
 });
 //#endregion
+//#region src/commands/list-events.ts
+const EventCategorySchema = _enum([
+	"SUMMIT",
+	"TECH_SEMINAR",
+	"LECTURE_SALON",
+	"COCKTAIL_SOCIAL",
+	"ROADSHOW",
+	"HACKATHON",
+	"EXHIBITION",
+	"COMPETITION",
+	"OTHER"
+]);
+const EventCountrySchema = _enum([
+	"AE",
+	"CA",
+	"CH",
+	"CN",
+	"DE",
+	"FR",
+	"GB",
+	"JP",
+	"KR",
+	"SG",
+	"TH",
+	"TR",
+	"US",
+	"VN",
+	"OTHER"
+]);
+const listEventsCommand = defineCommand({
+	meta: { description: "List PANews events / activities (活动)" },
+	args: {
+		search: {
+			type: "string",
+			description: "Search by event title"
+		},
+		category: {
+			type: "string",
+			description: "Filter by category: SUMMIT | TECH_SEMINAR | LECTURE_SALON | COCKTAIL_SOCIAL | ROADSHOW | HACKATHON | EXHIBITION | COMPETITION | OTHER"
+		},
+		country: {
+			type: "string",
+			description: "Filter by country code: AE CA CH CN DE FR GB JP KR SG TH TR US VN OTHER"
+		},
+		online: {
+			type: "string",
+			description: "Filter online events: true | false"
+		},
+		paid: {
+			type: "string",
+			description: "Filter paid events: true | false"
+		},
+		take: {
+			type: "string",
+			description: "Number of results (max 100)",
+			default: "15"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "15");
+		const params = new URLSearchParams({ take: String(take) });
+		if (args.search) params.set("search", args.search);
+		if (args.category) params.set("category", EventCategorySchema.parse(args.category));
+		if (args.country) params.set("country", EventCountrySchema.parse(args.country));
+		if (args.online !== void 0) params.set("isOnline", args.online);
+		if (args.paid !== void 0) params.set("isPaid", args.paid);
+		const items = (await request(`/events?${params}`, { lang })).map((e) => {
+			const topicNames = e.topics.map((t) => t.topic.translations[0]?.title).filter(Boolean);
+			return {
+				id: e.id,
+				title: e.title,
+				category: e.category,
+				country: e.country,
+				address: e.address,
+				startAt: e.startAt,
+				endedAt: e.endedAt,
+				isOnline: e.isOnline,
+				isPaid: e.isPaid,
+				price: e.price,
+				url: e.url,
+				topics: topicNames
+			};
+		});
+		console.log(toMarkdown(items));
+	}
+});
+//#endregion
+//#region src/commands/list-calendar-events.ts
+const listCalendarEventsCommand = defineCommand({
+	meta: { description: "List PANews calendar events (事件日历)" },
+	args: {
+		search: {
+			type: "string",
+			description: "Search by event title"
+		},
+		"start-from": {
+			type: "string",
+			description: "Filter events starting from date (ISO 8601, e.g. 2025-01-01)"
+		},
+		"category-id": {
+			type: "string",
+			description: "Filter by calendar category ID (comma-separated for multiple)"
+		},
+		order: {
+			type: "string",
+			description: "Sort order: asc | desc (default: asc for upcoming)",
+			default: "asc"
+		},
+		take: {
+			type: "string",
+			description: "Number of results (max 100)",
+			default: "20"
+		},
+		lang: {
+			type: "string",
+			description: "Language code or locale; auto-detected if omitted"
+		}
+	},
+	async run({ args }) {
+		const lang = resolveLang(args.lang);
+		const take = number().int().min(1).max(100).parse(args.take || "20");
+		const order = _enum(["asc", "desc"]).default("asc").parse(args.order || "asc");
+		const params = new URLSearchParams({
+			take: String(take),
+			sortOrder: order
+		});
+		if (args.search) params.set("search", args.search);
+		if (args["start-from"]) params.set("startAt", `gte:${args["start-from"]}`);
+		if (args["category-id"]) params.set("categoryId", args["category-id"]);
+		const [data, categories] = await Promise.all([request(`/calendar/events?${params}`, { lang }), request(`/calendar/categories`, { lang })]);
+		const catMap = new Map(categories.map((c) => [c.id, c.translations[0]?.name ?? c.id]));
+		const items = data.map((e) => {
+			const tr = e.translations.find((t) => t.lang === lang) ?? e.translations[0];
+			return {
+				id: e.id,
+				title: tr?.title,
+				date: e.ignoreTime ? e.startAt.slice(0, 10) : e.startAt,
+				category: catMap.get(e.categoryId) ?? e.categoryId,
+				event: e.event?.title,
+				article: e.article?.title,
+				url: e.url
+			};
+		});
+		console.log(toMarkdown(items));
+	}
+});
+//#endregion
 //#region src/panews.ts
 runMain(defineCommand({
 	meta: {
@@ -18758,7 +18910,9 @@ runMain(defineCommand({
 		"list-series": listSeriesCommand,
 		"get-series": getSeriesCommand,
 		"list-topics": listTopicsCommand,
-		"get-topic": getTopicCommand
+		"get-topic": getTopicCommand,
+		"list-events": listEventsCommand,
+		"list-calendar-events": listCalendarEventsCommand
 	}
 }));
 //#endregion

@@ -3,7 +3,8 @@ name: panews
 description: >
   当用户想了解加密货币或区块链相关新闻时使用。
   包括：了解今日行业动态、搜索某个话题或项目的报道、
-  查看热门文章和趋势、阅读具体文章、浏览专栏/专题/话题。
+  查看热门文章和趋势、阅读具体文章、浏览专栏/专题/话题、
+  查看行业活动和事件日历。
 metadata:
   author: Seven Du
 ---
@@ -22,6 +23,8 @@ metadata:
 | 浏览专栏 | 有哪些专栏 / 这个作者的专栏 | workflow-columns |
 | 浏览专题 | 有没有关于 XX 的系列报道 | workflow-series |
 | 浏览话题 | 大家对 XX 有什么看法 / 社区在讨论什么 | workflow-topics |
+| 热门活动 | 最近有哪些峰会/黑客松/活动 | workflow-events |
+| 事件日历 | 本月有什么重要事件 / 项目日程 | workflow-calendar |
 
 ## 通用原则
 
@@ -38,4 +41,6 @@ metadata:
 
 ```bash
 node {Skills Directory}/panews/scripts/cli.mjs list-articles [--type NORMAL|NEWS|VIDEO] [--take 10] [--lang <lang>]
+node {Skills Directory}/panews/scripts/cli.mjs list-events [--search <q>] [--category <type>] [--country <code>] [--online true|false] [--paid false] [--take 15] [--lang <lang>]
+node {Skills Directory}/panews/scripts/cli.mjs list-calendar-events [--search <q>] [--start-from <YYYY-MM-DD>] [--order asc|desc] [--take 20] [--lang <lang>]
 ```
