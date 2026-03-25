@@ -5,6 +5,12 @@ import { getDailyMustReadsCommand } from './commands/get-daily-must-reads.ts'
 import { getRankingsCommand } from './commands/get-rankings.ts'
 import { searchArticlesCommand } from './commands/search-articles.ts'
 import { getArticleCommand } from './commands/get-article.ts'
+import { listColumnsCommand } from './commands/list-columns.ts'
+import { getColumnCommand } from './commands/get-column.ts'
+import { listSeriesCommand } from './commands/list-series.ts'
+import { getSeriesCommand } from './commands/get-series.ts'
+import { listTopicsCommand } from './commands/list-topics.ts'
+import { getTopicCommand } from './commands/get-topic.ts'
 
 const main = defineCommand({
   meta: {
@@ -17,6 +23,12 @@ const main = defineCommand({
     'get-rankings': getRankingsCommand,
     'search-articles': searchArticlesCommand,
     'get-article': getArticleCommand,
+    'list-columns': listColumnsCommand,
+    'get-column': getColumnCommand,
+    'list-series': listSeriesCommand,
+    'get-series': getSeriesCommand,
+    'list-topics': listTopicsCommand,
+    'get-topic': getTopicCommand,
   },
 })
 
