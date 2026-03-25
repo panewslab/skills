@@ -52,4 +52,21 @@ node {Skills Directory}/panews/scripts/cli.mjs --help
 node {Skills Directory}/panews/scripts/cli.mjs <command> --help
 ```
 
-可用命令：`list-articles` · `get-daily-must-reads` · `get-rankings` · `search-articles` · `get-article` · `list-columns` · `get-column` · `list-series` · `get-series` · `list-topics` · `get-topic` · `list-events` · `list-calendar-events` · `get-hooks`
+可用命令：
+
+```
+         list-articles    List latest articles by type
+  get-daily-must-reads    Get daily must-read articles
+          get-rankings    Get article hot rankings (daily: 24h hot | weekly: 7-day search trending)
+       search-articles    Search articles by keyword
+           get-article    Get full article content by ID
+          list-columns    List or search PANews columns
+            get-column    Get column details and recent articles
+           list-series    List or search PANews series (专题)
+            get-series    Get series (专题) details and articles
+           list-topics    List or search PANews topics (话题)
+             get-topic    Get topic details and latest comments
+           list-events    List PANews events / activities (活动)
+  list-calendar-events    List PANews calendar events (事件日历)
+              get-hooks    Fetch PANews hooks / injection-point data by category
+```

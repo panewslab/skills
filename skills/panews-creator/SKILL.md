@@ -40,3 +40,23 @@ CLI 命令的 `--lang` 接受标准 locale 字符串（`zh`、`en`、`zh-TW`、`
 ```bash
 node {Skills Directory}/panews-creator/scripts/cli.mjs <command> [options]
 ```
+
+遇到不确定的参数，先用 `--help` 查看：
+
+```bash
+node {Skills Directory}/panews-creator/scripts/cli.mjs --help
+node {Skills Directory}/panews-creator/scripts/cli.mjs <command> --help
+```
+
+可用命令：
+
+```
+  validate-session    Validate session and list owned columns
+     list-articles    List articles in a column
+    create-article    Create an article in a column
+    update-article    Update a DRAFT or REJECTED article
+    delete-article    Delete a DRAFT or REJECTED article
+      upload-image    Upload a local image and return CDN URL
+       search-tags    Search tags by keyword
+      apply-column    Submit a column application
+```
