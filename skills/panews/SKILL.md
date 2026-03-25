@@ -54,7 +54,9 @@ It is best suited for structured news discovery and explanation. The skill shoul
 
 All CLI commands support `--lang`, accepting standard locale strings (e.g. `zh`, `en`, `zh-TW`, `en-US`, `ja-JP`), automatically mapped to the nearest supported language. If omitted, the system locale is auto-detected. Match `--lang` to the user's question language.
 
-## CLI
+## Scripts
+
+- `scripts/cli.mjs`: unified entrypoint for PANews reader commands
 
 ```bash
 node {Skills Directory}/panews/scripts/cli.mjs <command> [options]
@@ -69,7 +71,7 @@ node {Skills Directory}/panews/scripts/cli.mjs <command> --help
 
 Available commands:
 
-```
+```text
          list-articles    List latest articles by type
   get-daily-must-reads    Get daily must-read articles
           get-rankings    Get article hot rankings (daily: 24h hot | weekly: 7-day search trending)
