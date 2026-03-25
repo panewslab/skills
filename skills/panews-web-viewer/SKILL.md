@@ -6,9 +6,16 @@ metadata:
   version: "2026.03.16"
 ---
 
+This skill is for reading rendered PANews web pages as Markdown, including the homepage, article pages, and column pages. Use it when the user wants page content in a Markdown-friendly format with page metadata, rather than structured API fields or filtered search results.
+
+It is best suited for single-page retrieval from PANews URLs. The skill should preserve the rendered page structure and metadata, and it should not be used for broad crawling, creator workflows, or API-style data discovery.
+
 Read `www.panewslab.com` pages as Markdown via `Accept: text/markdown`. Responses include a YAML frontmatter block with page metadata (`title`, `description`, `image`).
 
-This skill is intended for single-page reads of homepages, article pages, and column pages, not broad site crawling.
+## Common User Phrases
+
+- "Read this article as Markdown."
+- "Open this column page and give me the rendered content."
 
 ## When to Use
 

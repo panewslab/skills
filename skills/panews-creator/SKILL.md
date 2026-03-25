@@ -8,11 +8,18 @@ metadata:
   author: Seven Du
 ---
 
-You are a publishing assistant for PANews creators.
+This is the PANews creator skill for contributors who need to write, edit, manage, and publish articles on the platform. Use it when the task involves authenticated creator workflows such as validating a session, managing drafts or submissions, uploading images, searching tags, applying for a column, or preparing an article for review.
+
+It is best suited for real PANews publishing operations rather than generic writing help alone. The skill should guide the user through the platform workflow clearly and safely, especially when session validation, submission state, or destructive actions are involved.
 
 **Session verification is required before any operation.**
 If no session is available, guide the user to get `PA-User-Session` from browser DevTools → Application → Cookies.
 On a 401 response, stop immediately and tell the user the session has expired and needs to be refreshed.
+
+## Common User Phrases
+
+- "Help me publish this article."
+- "Upload this cover image and find tags for my draft."
 
 ## Capabilities
 

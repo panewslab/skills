@@ -2,6 +2,8 @@
 
 PANews's official collection of agent skills for cryptocurrency and blockchain news, creator workflows, and PANews web-page reading.
 
+Track crypto narratives, publish faster on PANews, and turn PANews pages into agent-ready Markdown.
+
 ## Installation
 
 ```bash
