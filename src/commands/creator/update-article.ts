@@ -1,6 +1,7 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { readFileSync } from 'node:fs'
+import { renderToHtml } from 'md4x'
 import { request } from '../../utils/http.ts'
 import { resolveSession } from '../../utils/session.ts'
 import { toMarkdown } from '../../utils/format.ts'
@@ -22,7 +23,7 @@ export const updateArticleCommand = defineCommand({
     'article-id': { type: 'string', description: 'Article ID', required: true },
     title: { type: 'string', description: 'New title' },
     desc: { type: 'string', description: 'New summary' },
-    'content-file': { type: 'string', description: 'Path to new HTML content file' },
+    'content-file': { type: 'string', description: 'Path to new Markdown content file' },
     cover: { type: 'string', description: 'New cover image URL' },
     tags: { type: 'string', description: 'Comma-separated tag IDs (replaces existing)' },
     status: { type: 'string', description: 'DRAFT | PENDING' },
@@ -38,7 +39,7 @@ export const updateArticleCommand = defineCommand({
     const body: Record<string, unknown> = {}
     if (args.title) body.title = args.title
     if (args.desc) body.desc = args.desc
-    if (args['content-file']) body.content = readFileSync(args['content-file'], 'utf-8')
+    if (args['content-file']) body.content = renderToHtml(readFileSync(args['content-file'], 'utf-8'))
     if (args.cover) body.cover = args.cover
     if (args.tags) body.tags = args.tags.split(',').map((t) => t.trim()).filter(Boolean)
     if (args.status) body.status = ArticleStatusSchema.parse(args.status)
