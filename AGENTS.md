@@ -2,7 +2,7 @@
 
 This file is for agents developing this repository itself.
 
-The project is not a PANews API reference and not an end-user manual. It is the source repository for the PANews agent package: three skills, two CLI bundles, repo-root plugin manifests, and the documentation that ties them together.
+The project is neither a PANews API reference nor an end-user manual. It is the source repository for the PANews agent package: three skills, two CLI bundles, repo-root plugin manifests, and the documentation that ties them together.
 
 ## What This Repo Produces
 
