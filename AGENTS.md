@@ -1,93 +1,114 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file is for agents developing this repository itself.
 
-## Overview
+The project is not a PANews API reference and not an end-user manual. It is the source repository for the PANews agent package: three skills, two CLI bundles, repo-root plugin manifests, and the documentation that ties them together.
 
-PANews Skills is a collection of agent skills for the PANews platform. Each skill is a "recipe" that tells an agent how to complete a valuable user task, not an API reference.
+## What This Repo Produces
 
-**Installation (end-user):**
+- `panews`: structured PANews news discovery for crypto and blockchain coverage
+- `panews-creator`: authenticated PANews creator workflows
+- `panews-web-viewer`: rendered PANews page reads as Markdown
+- `skills/*/scripts/cli.mjs`: bundled Node entrypoints for `panews` and `panews-creator`
+- `/.codex-plugin/plugin.json`: Codex-style plugin manifest at repo root
+- `/.claude-plugin/plugin.json`: Claude Code plugin manifest at repo root
+
+## Canonical Sources
+
+Treat these as the source of truth:
+
+- `src/`: business logic, schemas, command wiring, shared utilities
+- `skills/*/SKILL.md`: user-facing skill contract and routing/discovery surface
+- `skills/*/references/workflow-*.md`: detailed task recipes
+- `skills/*/agents/openai.yaml`: OpenAI-specific discovery metadata
+- `README.md`: repository-level product and installation documentation
+- `/.codex-plugin/plugin.json` and `/.claude-plugin/plugin.json`: plugin metadata for repo-root plugin packaging
+
+Treat these as generated artifacts:
+
+- `skills/panews/scripts/cli.mjs`
+- `skills/panews-creator/scripts/cli.mjs`
+
+Do not hand-edit generated bundles unless the user explicitly asks for that. Change `src/` and rebuild instead.
+
+## Repo Shape
+
+```text
+src/
+  commands/                TypeScript command implementations
+  utils/                   shared formatting, HTTP, language, and session helpers
+  panews.ts                panews bundle entry
+  panews-creator.ts        panews-creator bundle entry
+
+skills/
+  panews/
+    SKILL.md
+    agents/openai.yaml
+    references/workflow-*.md
+    scripts/cli.mjs
+  panews-creator/
+    SKILL.md
+    agents/openai.yaml
+    references/workflow-*.md
+    scripts/cli.mjs
+  panews-web-viewer/
+    SKILL.md
+    agents/openai.yaml
+```
+
+`panews-web-viewer` is intentionally protocol-only right now. It has no bundled script.
+
+## How To Change The System
+
+When adding or changing a capability, work in this order:
+
+1. Start from the user task.
+2. Update the relevant `SKILL.md` and `references/workflow-*.md` so the skill contract is correct.
+3. Add or change the TypeScript command implementation in `src/`.
+4. Rebuild the affected CLI bundle with `npm run build`, `npm run build:panews`, or `npm run build:creator`.
+5. If routing/discovery changed, update `skills/*/agents/openai.yaml`.
+6. If packaging or installation changed, update `README.md` and plugin manifests.
+
+Do not start from low-level API fields and then try to reverse-fit a skill description later. The skill contract comes first.
+
+## Build And Verification
+
+Useful commands:
+
 ```bash
-bunx skills add panewslab/skills
-# or
-npx skills add panewslab/skills
+npm run build
+npm run build:panews
+npm run build:creator
+node skills/panews/scripts/cli.mjs --help
+node skills/panews-creator/scripts/cli.mjs --help
 ```
 
-## Skills
+This repository does not have a formal test suite. Minimum verification is:
 
-| Skill | Target User | Purpose | Auth Required |
-|-------|---------|------|---------|
-| `panews` | General readers | Browse, search, and read crypto news | No |
-| `panews-creator` | Content creators | Publish, manage, and polish PANews articles | Yes (`PA-User-Session`) |
-| `panews-web-viewer` | — | Render PANews pages as Markdown | No |
+- the relevant bundle builds successfully
+- the relevant CLI help or command invocation still runs
+- any changed skill docs still match the implemented command surface
 
-## File Structure
+## Implementation Rules
 
-```
-panews-skills/              # The repository root is the CLI project
-├── src/
-│   ├── commands/           # All command implementations, regardless of skill
-│   ├── shared/             # Shared utilities (HTTP, session, lang, etc.)
-│   ├── panews.ts           # Entry point: registers reader commands and outputs the panews skill bundle
-│   └── panews-creator.ts   # Entry point: registers creator commands and outputs the creator skill bundle
-├── package.json            # tsdown build config; outputs directly to skills/*/scripts/cli.mjs
-├── tsdown.config.ts
-└── skills/
-    ├── panews/
-    │   ├── SKILL.md            # Entry file: describes what the skill can do and lists available workflows
-    │   ├── scripts/cli.mjs     # tsdown output, single file, zero external dependencies
-    │   └── references/
-    │       └── workflow-*.md   # Detailed execution steps for each user scenario
-    └── panews-creator/
-        ├── SKILL.md
-        ├── scripts/cli.mjs
-        └── references/
-            └── workflow-*.md
-```
+- Keep TypeScript source in `src/`; keep generated code out of review unless the build output changed as a consequence.
+- Reuse `src/utils/http.ts`, `src/utils/lang.ts`, `src/utils/session.ts`, and `src/utils/format.ts` instead of duplicating request, locale, session, or formatting logic.
+- `panews-creator` operations that mutate data must respect session validation and stop on 401.
+- `panews-web-viewer` should stay a rendered-page Markdown protocol unless the user explicitly wants it rebuilt as an executable tool.
+- Keep `SKILL.md` first-screen content product-facing and discovery-friendly. Do not turn it into a system prompt.
+- Keep `README.md` focused on package-level installation and positioning. Do not duplicate all skill internals there.
 
-**Two layers**:
-- `SKILL.md` -> the index that tells Claude which workflows exist
-- `workflow-*.md` -> the recipe that explains how to complete a user task and directly references CLI commands
+## Packaging Rules
 
-**No `api.md` needed**: the CLI's Zod schemas are already the source of truth for field constraints. Required and optional fields, types, and validation all live in code. Claude should follow the commands shown in each workflow, and Zod errors will indicate what is wrong.
+- This repository itself is the plugin root.
+- Do not create an extra wrapper plugin directory unless the user explicitly asks for a multi-plugin repo layout.
+- Keep plugin technical name stable as `panews` unless the user explicitly requests a breaking rename.
+- It is acceptable for the repository display name to be broader than the technical install name. Current product-level name: `PANews Agent Toolkit`.
 
-## Skill Maintenance Rules
+## Common Mistakes To Avoid
 
-**When writing or updating a workflow, follow this order:**
-
-1. **Write the workflow first** (`references/workflow-*.md`): start from user intent and describe the steps and output requirements.
-2. **Determine which CLI commands are needed**: derive the required commands and parameters from the workflow steps.
-3. **Implement the commands in the CLI** (`cli/src/`): include Zod schema validation and business logic.
-4. **Update the bundle**: `cli/dist/panews.js` is the final artifact delivered for agent use.
-
-## Script Conventions
-
-- Each skill's `scripts/cli.mjs` is a single-file bundle produced by tsdown, including all dependencies (`zod`, `md4x`, etc.) with zero external runtime dependencies.
-- Source code is written in TypeScript under `src/`, and `src/utils/` stores shared utilities:
-  - `http.ts` -> fetch wrapper that handles 401 responses and errors consistently
-  - `session.ts` -> environment-variable session resolution chain
-  - `lang.ts` -> Zod schema for `@panews/lang`
-  - `format.ts` -> field filtering with `select`/`omit`, `htmlToMarkdown` for HTML-to-Markdown conversion via turndown, and `toMarkdown` for AI-friendly Markdown output
-- Parameters: choose the argument style based on complexity
-  - Simple scripts (one or a few arguments): positional arguments, for example `get-article.mjs <id>`
-  - Complex scripts (many fields, optional fields): accept a JSON string or JSON file path, for example `create-article.mjs '{"title":"..."}'` or `create-article.mjs payload.json`
-- Output: pretty-printed JSON to stdout; error JSON to stderr; non-zero exit code on failure
-- API base: `https://universal-api.panewslab.com` for `panews` / `panews-creator`, and `https://www.panewslab.com` for `web-viewer`
-- Languages: `--lang` defaults to `zh`; supported values are `zh`, `zh-hant`, `en`, `ja`, and `ko`
-
-## Session Authentication (`panews-creator`)
-
-Resolution order: `--session` flag -> `PANEWS_USER_SESSION` -> `PA_USER_SESSION` -> `PA_USER_SESSION_ID`
-
-Run `validate-session.mjs` before any operation. Stop immediately on 401.
-
-## Content Format (`panews-creator`)
-
-Article bodies must be HTML. Flow: user writes Markdown -> `bunx md4x <file>.md -t html -o <file>.html` -> pass the HTML file path to the script.
-
-## Lightweight Tooling
-
-There is no dedicated test framework or linter in this repository. Scripts can be run directly:
-```bash
-node skills/panews/scripts/search-articles.mjs "bitcoin"
-```
+- Editing `skills/*/scripts/cli.mjs` directly instead of rebuilding from `src/`
+- Writing local absolute filesystem paths into committed docs or manifests
+- Treating `AGENTS.md` as end-user documentation instead of repository-maintainer guidance
+- Letting `README.md`, `SKILL.md`, workflows, and actual CLI behavior drift apart
+- Reintroducing a script for `panews-web-viewer` without an explicit product decision
