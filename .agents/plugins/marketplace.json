@@ -12,7 +12,7 @@
       "name": "panews",
       "source": {
         "source": "local",
-        "path": "."
+        "path": "./"
       },
       "author": {
         "name": "Seven Du",
