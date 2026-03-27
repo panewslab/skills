@@ -42,7 +42,7 @@ For Claude Code, the typical flow is:
 
 ```text
 /plugin marketplace add panewslab/skills
-/plugin install panews
+/plugin install panews@panews-agent-toolkit
 ```
 
 For Codex-style plugin hosts, point the host at this repository root so it can read [.codex-plugin/plugin.json](.codex-plugin/plugin.json) and the bundled [skills/](skills/).

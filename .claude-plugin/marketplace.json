@@ -1,8 +1,10 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "panews-agent-toolkit",
-  "version": "0.1.0",
-  "description": "Marketplace index for the PANews Agent Toolkit Claude Code plugin.",
+  "metadata": {
+    "version": "0.1.0",
+    "description": "Marketplace index for the PANews Agent Toolkit Claude Code plugin."
+  },
   "owner": {
     "name": "PANews",
     "email": "hello@panony.com"
@@ -16,7 +18,7 @@
         "name": "Seven Du",
         "email": "seven@panony.com"
       },
-      "source": ".",
+      "source": "./",
       "category": "productivity"
     }
   ]
