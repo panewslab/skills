@@ -21,7 +21,7 @@ interface CompareBoardsResponse {
   board_run_id: number
   generated_at: string
   window_label: string
-  comparisons: BoardComparison[]
+  comparisons?: BoardComparison[]
 }
 
 function parseBoardList(value: string): string[] {
