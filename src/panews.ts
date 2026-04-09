@@ -14,11 +14,15 @@ import { getTopicCommand } from './commands/get-topic.ts'
 import { listEventsCommand } from './commands/list-events.ts'
 import { listCalendarEventsCommand } from './commands/list-calendar-events.ts'
 import { getHooksCommand } from './commands/get-hooks.ts'
+import { listPolymarketBoardsCommand } from './commands/list-polymarket-boards.ts'
+import { getPolymarketBoardCommand } from './commands/get-polymarket-board.ts'
+import { getPolymarketHighlightsCommand } from './commands/get-polymarket-highlights.ts'
+import { comparePolymarketBoardsCommand } from './commands/compare-polymarket-boards.ts'
 
 const main = defineCommand({
   meta: {
     name: 'panews',
-    description: 'PANews CLI – read crypto news',
+    description: 'PANews CLI – read crypto news and Polymarket leaderboard data',
   },
   subCommands: {
     'list-articles': listArticlesCommand,
@@ -35,6 +39,10 @@ const main = defineCommand({
     'list-events': listEventsCommand,
     'list-calendar-events': listCalendarEventsCommand,
     'get-hooks': getHooksCommand,
+    'list-polymarket-boards': listPolymarketBoardsCommand,
+    'get-polymarket-board': getPolymarketBoardCommand,
+    'get-polymarket-highlights': getPolymarketHighlightsCommand,
+    'compare-polymarket-boards': comparePolymarketBoardsCommand,
   },
 })
 
