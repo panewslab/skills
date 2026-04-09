@@ -56,11 +56,11 @@ It is best suited for structured news discovery, explanation, and leaderboard re
 
 - Use judgment for open-ended discovery tasks such as briefings, topic research, and trend summaries. Multiple valid paths are acceptable if the result stays grounded in PANews coverage.
 - Be more specific for fragile tasks:
-  - If the user provides an article URL or ID, resolve the article directly instead of broadening into generic search.
-  - If the task is rankings, events, calendar items, or platform picks, use the most direct matching workflow instead of combining unrelated workflows first.
-  - If PANews coverage is weak or missing, say so directly rather than filling gaps with outside knowledge.
-  - If the task is about Polymarket smart money boards, use the dedicated leaderboard workflows instead of article search.
-  - For board requests, stay grounded in returned leaderboard fields and highlights; do not infer unsupported market or trader behavior.
+  - Article URL or ID provided: resolve the article directly instead of broadening into generic search.
+  - Rankings, events, calendar items, and platform picks: use the most direct matching workflow instead of combining unrelated workflows first.
+  - Weak or missing PANews coverage: say so directly rather than filling gaps with outside knowledge.
+  - Polymarket smart money board tasks: use the dedicated leaderboard workflows instead of article search.
+  - Board requests: stay grounded in returned leaderboard fields and highlights; do not infer unsupported market or trader behavior.
 
 ## Language
 
