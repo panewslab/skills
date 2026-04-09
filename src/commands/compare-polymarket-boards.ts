@@ -71,14 +71,14 @@ export const comparePolymarketBoardsCommand = defineCommand({
     }
 
     const comparisons = (data.comparisons ?? []).map((item) => ({
-      boardKey: item.board_key,
-      boardName: item.board_name,
-      topCount: item.top_count,
-      medianProfitUsd: formatBoardNumber(item.median_profit_usd),
-      medianReturnPct: formatBoardNumber(item.median_return_pct),
-      topWallet: item.top_wallet,
-      topWalletProfitUsd: formatBoardNumber(item.top_wallet_profit_usd),
-      topWalletReturnPct: formatBoardNumber(item.top_wallet_return_pct),
+      board_key: item.board_key,
+      board_name: item.board_name,
+      top_count: item.top_count,
+      median_profit_usd: formatBoardNumber(item.median_profit_usd),
+      median_return_pct: formatBoardNumber(item.median_return_pct),
+      top_wallet: item.top_wallet,
+      top_wallet_profit_usd: formatBoardNumber(item.top_wallet_profit_usd),
+      top_wallet_return_pct: formatBoardNumber(item.top_wallet_return_pct),
     }))
 
     console.log(toMarkdown(meta))
