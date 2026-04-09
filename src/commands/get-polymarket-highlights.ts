@@ -27,8 +27,10 @@ export const getPolymarketHighlightsCommand = defineCommand({
     }
 
     console.log(toMarkdown(meta))
-    if ((data.highlights ?? []).length > 0) {
-      console.log('\n---\n')
+    console.log('\n---\n')
+    if ((data.highlights ?? []).length === 0) {
+      console.log('Highlight coverage is weak for the newest completed smart money board run.')
+    } else {
       console.log(toMarkdown(data.highlights))
     }
   },
