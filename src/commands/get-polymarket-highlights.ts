@@ -15,6 +15,10 @@ export const getPolymarketHighlightsCommand = defineCommand({
   },
   async run() {
     const data = await requestPolymarketBoards<HighlightsResponse>('/latest/highlights')
+    if (!data) {
+      console.log('No completed Polymarket smart money board highlights are available yet.')
+      return
+    }
 
     const meta = {
       boardRunId: data.board_run_id,

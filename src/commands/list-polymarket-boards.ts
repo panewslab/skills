@@ -27,6 +27,10 @@ export const listPolymarketBoardsCommand = defineCommand({
   },
   async run() {
     const data = await requestPolymarketBoards<LatestBoardsResponse>('/latest')
+    if (!data) {
+      console.log('No completed Polymarket smart money board run is available yet.')
+      return
+    }
 
     const meta = {
       boardRunId: data.board_run_id,

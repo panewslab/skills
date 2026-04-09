@@ -1,7 +1,7 @@
 export const POLYMARKET_BOARDS_API_BASE =
   process.env.PA_SMART_MONEY_API_BASE || 'https://polymarket-boards.panewslab.com/api/boards'
 
-export async function requestPolymarketBoards<T>(path: string): Promise<T> {
+export async function requestPolymarketBoards<T>(path: string): Promise<T | null> {
   const res = await fetch(`${POLYMARKET_BOARDS_API_BASE}${path}`, {
     method: 'GET',
     headers: {
@@ -17,7 +17,7 @@ export async function requestPolymarketBoards<T>(path: string): Promise<T> {
     process.exit(1)
   }
 
-  if (res.status === 204) return null as T
+  if (res.status === 204) return null
 
   return res.json() as Promise<T>
 }

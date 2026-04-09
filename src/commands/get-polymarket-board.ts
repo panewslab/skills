@@ -52,6 +52,10 @@ export const getPolymarketBoardCommand = defineCommand({
     const data = await requestPolymarketBoards<BoardResponse>(
       `/latest/${encodeURIComponent(board)}?${params}`,
     )
+    if (!data) {
+      console.log(`No completed data is available yet for board "${board}".`)
+      return
+    }
 
     const meta = {
       boardRunId: data.board_run_id,

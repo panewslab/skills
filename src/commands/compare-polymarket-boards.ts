@@ -58,6 +58,10 @@ export const comparePolymarketBoardsCommand = defineCommand({
     const data = await requestPolymarketBoards<CompareBoardsResponse>(
       `/latest/compare?${params}`,
     )
+    if (!data) {
+      console.log('No completed Polymarket smart money board comparison data is available yet.')
+      return
+    }
 
     const meta = {
       boardRunId: data.board_run_id,
