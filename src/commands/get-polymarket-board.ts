@@ -67,14 +67,14 @@ export const getPolymarketBoardCommand = defineCommand({
 
     const rows = (data.rows ?? []).map((row) => ({
       rank: row.rank,
-      name: row.display_name || row.proxy_wallet,
-      wallet: row.proxy_wallet,
-      profitUsd: formatBoardNumber(row.profit_usd),
-      returnPct: formatBoardNumber(row.return_pct),
-      marketsTraded: row.markets_traded,
-      performanceTrend: row.performance_trend,
-      profileUrl: row.profile_url,
-      summary: row.summary_line,
+      display_name: row.display_name,
+      proxy_wallet: row.proxy_wallet,
+      profit_usd: formatBoardNumber(row.profit_usd),
+      return_pct: formatBoardNumber(row.return_pct),
+      markets_traded: row.markets_traded,
+      performance_trend: row.performance_trend,
+      profile_url: row.profile_url,
+      summary_line: row.summary_line,
     }))
 
     console.log(toMarkdown(meta))
