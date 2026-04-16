@@ -26,6 +26,30 @@ interface CalendarEvent {
   [key: string]: unknown
 }
 
+const CalendarPeriodSchema = z.enum(['this-month', 'next-month', 'last-month'])
+
+function formatDate(value: Date): string {
+  const year = value.getFullYear()
+  const month = String(value.getMonth() + 1).padStart(2, '0')
+  const day = String(value.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function getMonthRange(period: z.infer<typeof CalendarPeriodSchema>): {
+  startFrom: string
+  endTo: string
+} {
+  const now = new Date()
+  const offset = period === 'last-month' ? -1 : period === 'next-month' ? 1 : 0
+  const start = new Date(now.getFullYear(), now.getMonth() + offset, 1)
+  const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0)
+
+  return {
+    startFrom: formatDate(start),
+    endTo: formatDate(end),
+  }
+}
+
 export const listCalendarEventsCommand = defineCommand({
   meta: {
     description: 'List PANews calendar events',
@@ -35,9 +59,17 @@ export const listCalendarEventsCommand = defineCommand({
       type: 'string',
       description: 'Search by event title',
     },
+    period: {
+      type: 'string',
+      description: 'Relative month window: this-month | next-month | last-month',
+    },
     'start-from': {
       type: 'string',
-      description: 'Filter events starting from date (ISO 8601, e.g. 2025-01-01)',
+      description: 'Filter events starting from date (YYYY-MM-DD)',
+    },
+    'end-to': {
+      type: 'string',
+      description: 'Filter events up to date (YYYY-MM-DD)',
     },
     'category-id': {
       type: 'string',
@@ -45,7 +77,7 @@ export const listCalendarEventsCommand = defineCommand({
     },
     order: {
       type: 'string',
-      description: 'Sort order: asc | desc (default: asc for upcoming)',
+      description: 'Sort order: asc | desc (default: asc)',
       default: 'asc',
     },
     take: {
@@ -63,10 +95,32 @@ export const listCalendarEventsCommand = defineCommand({
     const take = z.coerce.number().int().min(1).max(100).parse(args.take || '20')
     const order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
     const params = new URLSearchParams({ take: String(take), sortOrder: order })
+    const period = args.period
+      ? CalendarPeriodSchema.parse(args.period)
+      : undefined
+
+    if (period && (args['start-from'] || args['end-to'])) {
+      throw new Error('Use either --period or explicit --start-from/--end-to filters, not both.')
+    }
+
+    let startFrom = args['start-from']
+    let endTo = args['end-to']
+
+    if (period) {
+      const range = getMonthRange(period)
+      startFrom = range.startFrom
+      endTo = range.endTo
+    }
 
     if (args.search) params.set('search', args.search)
-    if (args['start-from']) params.set('startAt', `gte:${args['start-from']}`)
     if (args['category-id']) params.set('categoryId', args['category-id'])
+    if (startFrom && endTo) {
+      params.set('startAt', `between,${startFrom},${endTo}`)
+    } else if (startFrom) {
+      params.set('startAt', `gte,${startFrom}`)
+    } else if (endTo) {
+      params.set('startAt', `lte,${endTo}`)
+    }
 
     const [data, categories] = await Promise.all([
       request<CalendarEvent[]>(`/calendar/events?${params}`, { lang }),
