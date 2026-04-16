@@ -69,7 +69,7 @@ export const listCalendarEventsCommand = defineCommand({
     },
     'end-to': {
       type: 'string',
-      description: 'Filter events up to date (YYYY-MM-DD)',
+      description: 'Filter events up to date (YYYY-MM-DD); defaults to backward-looking order when used alone',
     },
     'category-id': {
       type: 'string',
@@ -90,11 +90,11 @@ export const listCalendarEventsCommand = defineCommand({
       description: 'Language code or locale; auto-detected if omitted',
     },
   },
-  async run({ args }) {
+  async run({ args, rawArgs }) {
     const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(100).parse(args.take || '20')
-    const order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
-    const params = new URLSearchParams({ take: String(take), sortOrder: order })
+    let order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
+    const hasExplicitOrder = rawArgs.includes('--order')
     const period = args.period
       ? CalendarPeriodSchema.parse(args.period)
       : undefined
@@ -111,6 +111,14 @@ export const listCalendarEventsCommand = defineCommand({
       startFrom = range.startFrom
       endTo = range.endTo
     }
+
+    // A lone upper-bound query is usually intended as a backward-looking scan
+    // ending at a date, so prefer reverse chronology unless the user overrides it.
+    if (endTo && !startFrom && !period && !hasExplicitOrder) {
+      order = 'desc'
+    }
+
+    const params = new URLSearchParams({ take: String(take), sortOrder: order })
 
     if (args.search) params.set('search', args.search)
     if (args['category-id']) params.set('categoryId', args['category-id'])

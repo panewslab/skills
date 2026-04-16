@@ -26,11 +26,12 @@ Translate the resolved window into query parameters:
 - Natural month windows -> prefer `--period this-month|next-month|last-month`
 - Explicit or rolling ranges -> use `--start-from` and `--end-to`
 - Lower-bound only requests -> use `--start-from`
+- Upper-bound only requests -> use `--end-to`, and treat them as backward-looking unless the user explicitly asks for ascending order
 
 Sorting is secondary to time resolution:
 
 - Use `--order asc` for most upcoming or bounded-window queries
-- Use `--order desc` only when the user explicitly asks for reverse chronology or for a backward-looking scan
+- Use `--order desc` for backward-looking scans, including `--end-to` used on its own, unless the user explicitly asks for ascending order
 
 ### 2. List calendar events inside that window
 
@@ -44,6 +45,7 @@ Examples of time-intent translation:
 - "下月有哪些代币解锁" -> `--period next-month --order asc`
 - "未来7天的大事和解锁" -> `--start-from <today> --end-to <today+7d> --order asc`
 - "回看上月日历" -> `--period last-month --order asc`
+- "看截至昨天为止最近有哪些事件" -> `--end-to <yesterday> --order desc`
 
 ### 3. Filter a specific date range
 
