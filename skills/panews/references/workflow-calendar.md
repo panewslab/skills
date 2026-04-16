@@ -39,6 +39,8 @@ Sorting is secondary to time resolution:
 node cli.mjs list-calendar-events [--period this-month|next-month|last-month] [--search "<keyword>"] [--start-from <YYYY-MM-DD>] [--end-to <YYYY-MM-DD>] [--order asc|desc] [--take 20] --lang <lang>
 ```
 
+`--period` and explicit date filters are mutually exclusive: use either `--period` or `--start-from`/`--end-to`, not both in the same query.
+
 Examples of time-intent translation:
 
 - "本月有哪些值得关注的事件" -> `--period this-month --order asc`
@@ -64,7 +66,7 @@ node cli.mjs list-calendar-events --period last-month --order asc --take 20 --la
 ### 5. Query a rolling future window
 
 ```bash
-node cli.mjs list-calendar-events --start-from 2026-04-16 --end-to 2026-04-23 --order asc --take 20 --lang <lang>
+node cli.mjs list-calendar-events --start-from <today> --end-to <today+7d> --order asc --take 20 --lang <lang>
 ```
 
 ## Output requirements

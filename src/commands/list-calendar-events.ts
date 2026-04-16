@@ -27,12 +27,31 @@ interface CalendarEvent {
 }
 
 const CalendarPeriodSchema = z.enum(['this-month', 'next-month', 'last-month'])
+const CalendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
 
 function formatDate(value: Date): string {
   const year = value.getFullYear()
   const month = String(value.getMonth() + 1).padStart(2, '0')
   const day = String(value.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
+}
+
+function parseCalendarDate(value: string, flagName: '--start-from' | '--end-to'): Date {
+  CalendarDateSchema.parse(value)
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new Error(`${flagName} must be a valid calendar date in YYYY-MM-DD format.`)
+  }
+
+  return date
 }
 
 function getMonthRange(period: z.infer<typeof CalendarPeriodSchema>): {
@@ -110,6 +129,23 @@ export const listCalendarEventsCommand = defineCommand({
       const range = getMonthRange(period)
       startFrom = range.startFrom
       endTo = range.endTo
+    }
+
+    let startFromDate: Date | undefined
+    let endToDate: Date | undefined
+
+    if (startFrom) {
+      startFromDate = parseCalendarDate(startFrom, '--start-from')
+      startFrom = formatDate(startFromDate)
+    }
+
+    if (endTo) {
+      endToDate = parseCalendarDate(endTo, '--end-to')
+      endTo = formatDate(endToDate)
+    }
+
+    if (startFromDate && endToDate && startFromDate.getTime() > endToDate.getTime()) {
+      throw new Error('--start-from must be earlier than or equal to --end-to.')
     }
 
     // A lone upper-bound query is usually intended as a backward-looking scan
