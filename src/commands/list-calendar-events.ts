@@ -26,6 +26,49 @@ interface CalendarEvent {
   [key: string]: unknown
 }
 
+const CalendarPeriodSchema = z.enum(['this-month', 'next-month', 'last-month'])
+const CalendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+
+function formatDate(value: Date): string {
+  const year = value.getFullYear()
+  const month = String(value.getMonth() + 1).padStart(2, '0')
+  const day = String(value.getDate()).padStart(2, '0')
+  return `${year}-${month}-${day}`
+}
+
+function parseCalendarDate(value: string, flagName: '--start-from' | '--end-to'): Date {
+  CalendarDateSchema.parse(value)
+
+  const [year, month, day] = value.split('-').map(Number)
+  const date = new Date(Date.UTC(year, month - 1, day))
+
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() !== month - 1 ||
+    date.getUTCDate() !== day
+  ) {
+    throw new Error(`${flagName} must be a valid calendar date in YYYY-MM-DD format.`)
+  }
+
+  return date
+}
+
+function getMonthRange(period: z.infer<typeof CalendarPeriodSchema>): {
+  startFrom: string
+  endTo: string
+} {
+  const now = new Date()
+  const offset = period === 'last-month' ? -1 : period === 'next-month' ? 1 : 0
+  const start = new Date(now.getFullYear(), now.getMonth() + offset, 1)
+  const end = new Date(now.getFullYear(), now.getMonth() + offset + 1, 0)
+
+  return {
+    startFrom: formatDate(start),
+    endTo: formatDate(end),
+  }
+}
+
 export const listCalendarEventsCommand = defineCommand({
   meta: {
     description: 'List PANews calendar events',
@@ -35,9 +78,17 @@ export const listCalendarEventsCommand = defineCommand({
       type: 'string',
       description: 'Search by event title',
     },
+    period: {
+      type: 'string',
+      description: 'Relative month window: this-month | next-month | last-month',
+    },
     'start-from': {
       type: 'string',
-      description: 'Filter events starting from date (ISO 8601, e.g. 2025-01-01)',
+      description: 'Filter events starting from date (YYYY-MM-DD)',
+    },
+    'end-to': {
+      type: 'string',
+      description: 'Filter events up to date (YYYY-MM-DD); defaults to backward-looking order when used alone',
     },
     'category-id': {
       type: 'string',
@@ -45,7 +96,7 @@ export const listCalendarEventsCommand = defineCommand({
     },
     order: {
       type: 'string',
-      description: 'Sort order: asc | desc (default: asc for upcoming)',
+      description: 'Sort order: asc | desc (default: asc)',
       default: 'asc',
     },
     take: {
@@ -58,15 +109,60 @@ export const listCalendarEventsCommand = defineCommand({
       description: 'Language code or locale; auto-detected if omitted',
     },
   },
-  async run({ args }) {
+  async run({ args, rawArgs }) {
     const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(100).parse(args.take || '20')
-    const order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
+    let order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
+    const hasExplicitOrder = rawArgs.includes('--order')
+    const period = args.period
+      ? CalendarPeriodSchema.parse(args.period)
+      : undefined
+
+    if (period && (args['start-from'] || args['end-to'])) {
+      throw new Error('Use either --period or explicit --start-from/--end-to filters, not both.')
+    }
+
+    let startFrom = args['start-from']
+    let endTo = args['end-to']
+
+    if (period) {
+      const range = getMonthRange(period)
+      startFrom = range.startFrom
+      endTo = range.endTo
+    }
+
+    let startFromDate: Date | undefined
+    let endToDate: Date | undefined
+
+    if (startFrom) {
+      startFromDate = parseCalendarDate(startFrom, '--start-from')
+    }
+
+    if (endTo) {
+      endToDate = parseCalendarDate(endTo, '--end-to')
+    }
+
+    if (startFromDate && endToDate && startFromDate.getTime() > endToDate.getTime()) {
+      throw new Error('--start-from must be earlier than or equal to --end-to.')
+    }
+
+    // A lone upper-bound query is usually intended as a backward-looking scan
+    // ending at a date, so prefer reverse chronology unless the user overrides it.
+    if (endTo && !startFrom && !period && !hasExplicitOrder) {
+      order = 'desc'
+    }
+
     const params = new URLSearchParams({ take: String(take), sortOrder: order })
 
     if (args.search) params.set('search', args.search)
-    if (args['start-from']) params.set('startAt', `gte:${args['start-from']}`)
     if (args['category-id']) params.set('categoryId', args['category-id'])
+    if (startFrom && endTo) {
+      params.set('startAt', `between,${startFrom},${endTo}`)
+    } else if (startFrom) {
+      params.set('startAt', `gte,${startFrom}`)
+    } else if (endTo) {
+      params.set('startAt', `lte,${endTo}`)
+    }
 
     const [data, categories] = await Promise.all([
       request<CalendarEvent[]>(`/calendar/events?${params}`, { lang }),
