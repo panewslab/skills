@@ -136,12 +136,10 @@ export const listCalendarEventsCommand = defineCommand({
 
     if (startFrom) {
       startFromDate = parseCalendarDate(startFrom, '--start-from')
-      startFrom = formatDate(startFromDate)
     }
 
     if (endTo) {
       endToDate = parseCalendarDate(endTo, '--end-to')
-      endTo = formatDate(endToDate)
     }
 
     if (startFromDate && endToDate && startFromDate.getTime() > endToDate.getTime()) {
