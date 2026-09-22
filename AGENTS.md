@@ -76,15 +76,18 @@ Do not start from low-level API fields and then try to reverse-fit a skill descr
 Useful commands:
 
 ```bash
+npm run typecheck
 npm run build
 npm run build:panews
 npm run build:creator
+npm test
 node skills/panews/scripts/cli.mjs --help
 node skills/panews-creator/scripts/cli.mjs --help
 ```
 
-This repository does not have a formal test suite. Minimum verification is:
+The native Node test suite exercises the bundled CLIs with mocked HTTP requests. Rebuild before running it. Minimum verification is:
 
+- TypeScript checking and the CLI regression tests pass
 - the relevant bundle builds successfully
 - the relevant CLI help or command invocation still runs
 - any changed skill docs still match the implemented command surface

@@ -5,13 +5,15 @@ export const API_BASE = "https://universal-api.panewslab.com";
 export interface RequestOptions {
   lang?: Lang;
   session?: string;
+  signal?: AbortSignal;
+  throwOnError?: boolean;
 }
 
 export async function request<T>(
   path: string,
   options: RequestOptions & { method?: string; body?: unknown } = {},
 ): Promise<T> {
-  const { lang, session, method = "GET", body } = options;
+  const { lang, session, signal, method = "GET", body } = options;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
@@ -23,7 +25,10 @@ export async function request<T>(
     method,
     headers,
     body: body !== undefined ? JSON.stringify(body) : undefined,
+    signal,
   });
+
+  if (!res.ok && options.throwOnError) throw new Error(`HTTP ${res.status}`);
 
   if (res.status === 401) {
     console.error(

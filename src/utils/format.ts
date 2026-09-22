@@ -12,7 +12,7 @@ export function htmlToMarkdown(html: string): string {
 }
 
 // Pick only specified fields from an object
-export function select<T extends Record<string, unknown>>(
+export function select<T extends object>(
   obj: T,
   fields: (keyof T)[],
 ): Partial<T> {

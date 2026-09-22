@@ -46,7 +46,7 @@ export const validateSessionCommand = defineCommand({
 
     const output = {
       user: { id: user.id, name: user.profile?.name },
-      columns: columns.map((c) => select(c as Record<string, unknown>, ['id', 'name', 'status'])),
+      columns: columns.map((c) => select(c, ['id', 'name', 'status'])),
     }
 
     console.log(toMarkdown(output))
