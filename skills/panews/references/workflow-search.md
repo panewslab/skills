@@ -53,5 +53,6 @@ Get the article ID from the search results and go to [workflow-read-article](./w
 ## Output requirements
 
 - Include title, summary, and publish time with each result. When the match comes from the article body, the CLI also returns a plain-text `snippet` as supporting context; it is not the full article.
+- If a translated title or summary is missing, that field falls back to the original article language.
 - If results are sparse or irrelevant, try different keywords or broaden the date range. Changing `--mode` changes ordering, not matching rules.
 - Do not add information beyond the search results

@@ -89,6 +89,19 @@ test('search defaults and original language are preserved without duplicating su
   assert.doesNotMatch(result.stdout, /snippet|English/)
 })
 
+for (const missing of [['title'], ['desc'], ['title', 'desc']]) {
+  test(`partial translations retain original ${missing.join(' and ')}`, () => {
+    const translation = { ...item.article.translations[0] }
+    for (const field of missing) translation[field] = null
+    const result = run(['search-articles', 'Bitcoin', '--lang', 'en'], {
+      '/search/results': { body: { items: [{ ...item, article: { ...item.article, translations: [translation] } }] } },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.ok(result.stdout.includes(missing.includes('title') ? '中文标题' : 'English title'))
+    assert.ok(result.stdout.includes(missing.includes('desc') ? '中文摘要' : 'English summary'))
+  })
+}
+
 for (const nextCursor of [undefined, 'snapshot-cursor']) {
   test(`empty search ${nextCursor ? 'page releases its snapshot' : 'needs no cleanup'}`, () => {
     const result = run(['search-articles', 'nothing'], {

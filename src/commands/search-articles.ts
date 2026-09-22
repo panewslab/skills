@@ -101,7 +101,7 @@ export const searchArticlesCommand = defineCommand({
           : article.translations?.find((translation) => translation.lang === lang)
         return {
           ...select(article, ['id', 'title', 'desc', 'publishedAt']),
-          ...(translation ? { title: translation.title, desc: translation.desc } : {}),
+          ...(translation ? { title: translation.title ?? article.title, desc: translation.desc ?? article.desc } : {}),
           ...(match.field === 'content' ? { snippet: match.snippet.text } : {}),
         }
       })
