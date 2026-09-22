@@ -27,7 +27,7 @@ interface CalendarEvent {
 }
 
 const CalendarPeriodSchema = z.enum(['this-month', 'next-month', 'last-month'])
-const CalendarDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/)
+const CalendarDateSchema = z.iso.date()
 
 function formatDate(value: Date): string {
   const year = value.getFullYear()
@@ -37,21 +37,12 @@ function formatDate(value: Date): string {
 }
 
 function parseCalendarDate(value: string, flagName: '--start-from' | '--end-to'): Date {
-  CalendarDateSchema.parse(value)
-
-  const [year, month, day] = value.split('-').map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
-
-  if (
-    Number.isNaN(date.getTime()) ||
-    date.getUTCFullYear() !== year ||
-    date.getUTCMonth() !== month - 1 ||
-    date.getUTCDate() !== day
-  ) {
+  const parsed = CalendarDateSchema.safeParse(value)
+  if (!parsed.success) {
     throw new Error(`${flagName} must be a valid calendar date in YYYY-MM-DD format.`)
   }
 
-  return date
+  return new Date(`${parsed.data}T00:00:00.000Z`)
 }
 
 function getMonthRange(period: z.infer<typeof CalendarPeriodSchema>): {
@@ -113,7 +104,7 @@ export const listCalendarEventsCommand = defineCommand({
     const lang = resolveLang(args.lang)
     const take = z.coerce.number().int().min(1).max(100).parse(args.take || '20')
     let order = z.enum(['asc', 'desc']).default('asc').parse(args.order || 'asc')
-    const hasExplicitOrder = rawArgs.includes('--order')
+    const hasExplicitOrder = rawArgs.some((arg) => arg === '--order' || arg.startsWith('--order='))
     const period = args.period
       ? CalendarPeriodSchema.parse(args.period)
       : undefined
