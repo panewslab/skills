@@ -1,7 +1,6 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { readFileSync } from 'node:fs'
-import { init, renderToHtml } from 'md4x/standalone'
 import { request } from '../../utils/http.ts'
 import { resolveSession } from '../../utils/session.ts'
 import { toMarkdown } from '../../utils/format.ts'
@@ -36,9 +35,8 @@ export const createArticleCommand = defineCommand({
       process.exit(1)
     }
 
-    const markdown = readFileSync(args['content-file'], 'utf-8')
-    await init()
-    const content = renderToHtml(markdown)
+    const content = z.string().refine((value) => value.trim().length > 0, 'Content file must not be empty')
+      .parse(readFileSync(args['content-file'], 'utf-8'))
     const status = ArticleStatusSchema.parse(args.status || 'DRAFT')
     const tagIds = args.tags ? args.tags.split(',').map((t) => t.trim()).filter(Boolean) : undefined
 

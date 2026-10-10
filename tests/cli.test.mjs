@@ -11,10 +11,14 @@ after(() => rmSync(directory, { recursive: true, force: true }))
 for (const skill of ['panews', 'panews-creator']) {
   copyFileSync(new URL(`../skills/${skill}/scripts/cli.mjs`, import.meta.url), join(directory, `${skill}.mjs`))
 }
-writeFileSync(join(directory, 'article.md'), '# Hello\n\n**world** and [PANews](https://www.panewslab.com)\n\n- 比特币\n')
+const markdownBody = '# Hello\n\n**world** and [PANews](https://www.panewslab.com)\n\n- 比特币\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n```html\n<b>literal</b>\n```\n\n<video src="https://cdn.example/video.mp4" controls></video>\n'
+writeFileSync(join(directory, 'article.md'), markdownBody)
+writeFileSync(join(directory, 'empty.md'), '  \n\t')
 
 function mockFetch(routes) {
   globalThis.fetch = async (url, options = {}) => {
+    if (options.headers?.['PA-Content-Format'] !== 'markdown') throw new Error('Missing Markdown content negotiation')
+    if (options.headers?.['User-Agent'] !== 'panews-cli/0.2.1') throw new Error('Missing CLI version')
     const { pathname, searchParams } = new URL(url)
     console.error('HTTP ' + JSON.stringify({
       path: pathname, query: Object.fromEntries(searchParams), method: options.method ?? 'GET',
@@ -184,7 +188,7 @@ test('creator stops on 401 before requesting columns', () => {
 })
 
 for (const command of ['create-article', 'update-article']) {
-  test(`${command} renders Markdown with embedded WASM outside the repository`, () => {
+  test(`${command} sends Markdown unchanged from the standalone bundle`, () => {
     const creating = command === 'create-article'
     const path = `/columns/column-id/articles${creating ? '' : '/article-id'}`
     const result = run([command, '--column-id', 'column-id', '--content-file', 'article.md', '--session', 'test-session',
@@ -194,9 +198,56 @@ for (const command of ['create-article', 'update-article']) {
     assert.equal(result.status, 0, result.stderr)
     assert.equal(result.requests[0].method, creating ? 'POST' : 'PATCH')
     const { content } = result.requests[0].body
-    assert.match(content, /<h1>Hello<\/h1>/)
-    assert.match(content, /<strong>world<\/strong>/)
-    assert.match(content, /<a href="https:\/\/www.panewslab.com">PANews<\/a>/)
-    assert.match(content, /<li>比特币<\/li>/)
+    assert.equal(content, markdownBody)
+    assert.equal(result.requests[0].body.status, 'DRAFT')
+  })
+}
+
+for (const command of ['create-article', 'update-article']) {
+  test(`${command} rejects empty Markdown before making requests`, () => {
+    const result = run([command, '--column-id', 'column-id', '--content-file', 'empty.md', '--session', 'test-session',
+      ...(command === 'create-article' ? ['--title', 'Test', '--desc', 'Summary', '--lang', 'en'] : ['--article-id', 'article-id'])], {}, 'panews-creator')
+    assert.equal(result.status, 1)
+    assert.equal(result.requests.length, 0)
+    assert.match(result.stderr, /Content file must not be empty/)
+  })
+}
+
+test('metadata-only updates omit the body', () => {
+  const result = run(['update-article', '--column-id', 'column-id', '--article-id', 'article-id', '--title', 'New title', '--session', 'test-session'], {
+    '/columns/column-id/articles/article-id': { body: { id: 'article-id', status: 'DRAFT' } },
+  }, 'panews-creator')
+  assert.equal(result.status, 0, result.stderr)
+  assert.deepEqual(result.requests[0].body, { title: 'New title', status: 'DRAFT' })
+})
+
+test('an update without changes stops before HTTP', () => {
+  const result = run(['update-article', '--column-id', 'column-id', '--article-id', 'article-id', '--session', 'test-session'], {}, 'panews-creator')
+  assert.equal(result.status, 1)
+  assert.equal(result.requests.length, 0)
+  assert.match(result.stderr, /No fields were provided/)
+})
+
+test('explicit review submission preserves PENDING', () => {
+  const result = run(['update-article', '--column-id', 'column-id', '--article-id', 'article-id', '--status', 'PENDING', '--session', 'test-session'], {
+    '/columns/column-id/articles/article-id': { body: { id: 'article-id', status: 'PENDING' } },
+  }, 'panews-creator')
+  assert.equal(result.status, 0, result.stderr)
+  assert.deepEqual(result.requests[0].body, { status: 'PENDING' })
+})
+
+for (const lang of ['en', 'zh']) {
+  test(`article preserves Markdown and selects ${lang} content`, () => {
+    const original = '# Original\n\n' + markdownBody
+    const translated = '# Translation\n\n' + markdownBody
+    const result = run(['get-article', 'article-id', '--lang', lang], {
+      '/articles/article-id': { body: { title: 'Original title', desc: 'Original summary', content: original,
+        translations: [{ lang: 'en', title: 'English title', content: translated }] } },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.requests[0].lang, lang)
+    assert.ok(result.stdout.endsWith((lang === 'en' ? translated : original) + '\n'))
+    assert.ok(result.stdout.includes(lang === 'en' ? 'English title' : 'Original title'))
+    assert.match(result.stdout, /Original summary/)
   })
 }
