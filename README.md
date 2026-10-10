@@ -69,6 +69,10 @@ openclaw plugins install -l .
 
 ## Article content
 
-Reader and creator CLIs exchange article bodies as Markdown. Creator content files are uploaded directly; the reader keeps the returned Markdown, including supported media HTML, intact. During the API compatibility period, requests send `PA-Content-Format: markdown`; the header will be removed when Markdown becomes the sole API body format. Requests identify this release as `panews-cli/0.2.1`.
+Reader and creator CLIs exchange article bodies as Markdown. Creator content files are uploaded directly; the reader keeps the returned Markdown, including supported media HTML, intact. During the API compatibility period, requests send `PA-Content-Format: markdown`; the header will be removed when Markdown becomes the sole API body format. Requests identify this release as `panews-cli/0.3.0`.
 
 The generated Node bundles include their runtime dependencies and need no Markdown conversion WASM or HTML parser. The web-viewer skill continues to read rendered web pages.
+
+## Event pagination
+
+`list-events` reads one page per invocation with `--limit` (default 15, maximum 100), optional `--cursor`, and optional `--sort=status`. Its Markdown results include pagination metadata with `nextCursor`, `asOf`, and the effective query. Continue with the returned cursor and the same filters and language; only a missing next cursor ends pagination. The old `--take` and `--skip` options are rejected by this command; other commands retain their existing parameters. See the [events workflow](skills/panews/references/workflow-events.md) for complete examples and recovery guidance.

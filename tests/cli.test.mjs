@@ -18,7 +18,7 @@ writeFileSync(join(directory, 'empty.md'), '  \n\t')
 function mockFetch(routes) {
   globalThis.fetch = async (url, options = {}) => {
     if (options.headers?.['PA-Content-Format'] !== 'markdown') throw new Error('Missing Markdown content negotiation')
-    if (options.headers?.['User-Agent'] !== 'panews-cli/0.2.1') throw new Error('Missing CLI version')
+    if (options.headers?.['User-Agent'] !== 'panews-cli/0.3.0') throw new Error('Missing CLI version')
     const { pathname, searchParams } = new URL(url)
     console.error('HTTP ' + JSON.stringify({
       path: pathname, query: Object.fromEntries(searchParams), method: options.method ?? 'GET',
@@ -28,7 +28,7 @@ function mockFetch(routes) {
     const route = routes[pathname]
     if (!route) throw new Error(`Unexpected request: ${pathname}`)
     if (route.networkError) throw new Error('Network unavailable')
-    return Response.json(route.body, { status: route.status ?? 200 })
+    return Response.json(route.body, { status: route.status ?? 200, headers: route.headers })
   }
 }
 
@@ -166,6 +166,146 @@ for (const order of [[], ['--order', 'asc'], ['--order=asc']]) {
     assert.equal(request.query.sortOrder, order.length ? 'asc' : 'desc')
   })
 }
+
+const activity = {
+  id: 'event-id', title: 'Event title', category: 'SUMMIT', country: 'US', address: 'Event address',
+  startAt: '2026-10-10T00:00:00.000Z', endedAt: '2026-10-12T00:00:00.000Z',
+  isOnline: false, isPaid: true, price: '10 USD', url: 'https://example.com/event',
+  topics: [
+    { eventId: 'event-id', topicId: 'translated', topic: { id: 'translated', label: 'Original topic', translations: [
+      { lang: 'ja', label: '日本語トピック' }, { lang: 'en', label: 'English topic' },
+    ] } },
+    { eventId: 'event-id', topicId: 'fallback', topic: { id: 'fallback', label: 'Fallback topic', translations: [
+      { lang: 'zh', label: '中文话题' },
+    ] } },
+  ],
+  internal: 'UNUSED_EVENT_DATA',
+}
+const eventAsOf = '2026-10-11T00:00:00.000Z'
+
+function eventPagination(result) {
+  const blocks = [...result.stdout.matchAll(/```json\s*\n([\s\S]*?)\n```/g)]
+  assert.equal(blocks.length, 1, result.stdout)
+  return JSON.parse(blocks[0][1])
+}
+
+test('events default to one cursor-ready request without changing the default sort', () => {
+  const result = run(['list-events'], { '/events': { body: [] } })
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(result.requests.length, 1)
+  assert.deepEqual(result.requests[0].query, { limit: '15' })
+  assert.equal(result.requests[0].path, '/events')
+  assert.equal(result.requests[0].method, 'GET')
+  assert.deepEqual(eventPagination(result), {
+    nextCursor: null, asOf: null, query: { limit: 15, lang: result.requests[0].lang },
+  })
+})
+
+test('events preserve Markdown fields and use matching topic labels with original-label fallback', () => {
+  const result = run(['list-events', '--lang', 'en-US'], {
+    '/events': { body: [activity], headers: { 'PA-Events-As-Of': eventAsOf } },
+  })
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(result.requests.length, 1)
+  for (const text of ['event-id', 'Event title', 'SUMMIT', 'US', 'Event address', activity.startAt,
+    activity.endedAt, '10 USD', activity.url, 'English topic', 'Fallback topic']) assert.ok(result.stdout.includes(text), text)
+  assert.match(result.stdout, /\*\*isOnline\*\*: false/)
+  assert.match(result.stdout, /\*\*isPaid\*\*: true/)
+  assert.doesNotMatch(result.stdout, /UNUSED_EVENT_DATA|日本語トピック|中文话题|Original topic/)
+  assert.deepEqual(eventPagination(result), { nextCursor: null, asOf: eventAsOf, query: { limit: 15, lang: 'en' } })
+})
+
+test('events resume an opaque cursor with the same filters and language, without inventing asOf', () => {
+  const cursor = 'opaque-v1.A+/=%?&unchanged'
+  const options = ['--limit', '2', '--sort', 'status', '--search', 'side event & meetup', '--category', 'SUMMIT',
+    '--country', 'US', '--online', 'false', '--paid', 'true', '--lang', 'en-US']
+  const first = run(['list-events', ...options, '--as-of', '2026-10-11T08:00:00+08:00'], {
+    '/events': { body: [activity], headers: { 'PA-Next-Cursor': cursor, 'PA-Events-As-Of': eventAsOf } },
+  })
+  assert.equal(first.status, 0, first.stderr)
+  assert.equal(first.requests.length, 1)
+  const expectedQuery = {
+    limit: '2', sort: 'status', search: 'side event & meetup', category: 'SUMMIT', country: 'US', isOnline: 'false', isPaid: 'true',
+  }
+  assert.deepEqual(first.requests[0], { path: '/events', method: 'GET', lang: 'en', query: { ...expectedQuery, asOf: eventAsOf } })
+  const metadata = { limit: 2, sort: 'status', search: 'side event & meetup', category: 'SUMMIT', country: 'US', online: false, paid: true, lang: 'en' }
+  assert.deepEqual(eventPagination(first), { nextCursor: cursor, asOf: eventAsOf, query: metadata })
+
+  const next = run(['list-events', ...options, '--cursor', eventPagination(first).nextCursor], {
+    '/events': { body: [], headers: { 'pa-events-as-of': eventAsOf } },
+  })
+  assert.equal(next.status, 0, next.stderr)
+  assert.equal(next.requests.length, 1)
+  assert.deepEqual(next.requests[0], { path: '/events', method: 'GET', lang: 'en', query: { ...expectedQuery, cursor } })
+  assert.deepEqual(eventPagination(next), { nextCursor: null, asOf: eventAsOf, query: metadata })
+})
+
+for (const body of [[], [activity]]) {
+  test(`events retain pagination headers on ${body.length ? 'nonempty' : 'empty'} pages`, () => {
+    const result = run(['list-events', '--limit', '100', '--lang', 'zh'], {
+      '/events': { body, headers: { 'pa-next-cursor': 'opaque-next-page', 'pa-events-as-of': eventAsOf } },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.requests.length, 1)
+    assert.deepEqual(result.requests[0].query, { limit: '100' })
+    assert.deepEqual(eventPagination(result), {
+      nextCursor: 'opaque-next-page', asOf: eventAsOf, query: { limit: 100, lang: 'zh' },
+    })
+  })
+}
+
+for (const asOf of [null, '2026-10-11T08:00:00+08:00']) {
+  test(`event metadata uses ${asOf ? 'the server header unchanged' : 'null when the server omits asOf'}`, () => {
+    const result = run(['list-events', '--lang', 'en', '--as-of', eventAsOf], {
+      '/events': { body: [], headers: asOf ? { 'PA-Events-As-Of': asOf } : {} },
+    })
+    assert.equal(result.status, 0, result.stderr)
+    assert.equal(result.requests.length, 1)
+    assert.deepEqual(result.requests[0].query, { limit: '15', asOf: eventAsOf })
+    assert.deepEqual(eventPagination(result), { nextCursor: null, asOf, query: { limit: 15, lang: 'en' } })
+  })
+}
+
+for (const args of [['--take', '7'], ['--take=7'], ['--skip', '0'], ['--skip=15'], ['--limit', '15', '--take', '7']]) {
+  test(`removed event pagination options fail before HTTP: ${args.join(' ')}`, () => {
+    const result = run(['list-events', ...args])
+    assert.equal(result.status, 1)
+    assert.equal(result.requests.length, 0)
+    assert.match(result.stderr, /take|skip/)
+  })
+}
+
+for (const failure of [{ status: 400, body: { error: 'Invalid cursor' } }, { status: 503, body: {} }, { networkError: true }]) {
+  test(`event ${failure.networkError ? 'network' : `HTTP ${failure.status}`} errors do not retry or fall back to offset`, () => {
+    const result = run(['list-events', '--cursor', 'opaque-cursor', '--sort', 'status', '--lang', 'en'], { '/events': failure })
+    assert.equal(result.status, 1)
+    assert.equal(result.stdout, '')
+    assert.equal(result.requests.length, 1)
+    assert.deepEqual(result.requests[0].query, { limit: '15', cursor: 'opaque-cursor', sort: 'status' })
+  })
+}
+
+for (const args of [
+  ['--limit', '0'], ['--limit', '101'], ['--limit', '1.5'], ['--limit', 'bad'],
+  ['--take', '0'], ['--take', '101'], ['--limit', '15', '--take', '15'],
+  ['--sort', 'start'], ['--sort', 'STATUS'], ['--cursor', ''],
+  ['--as-of', 'not-a-date'], ['--as-of', '2026-10-11T00:00:00'], ['--as-of', '2026-02-30T00:00:00Z'],
+  ['--online', 'maybe'], ['--paid', '1'],
+]) {
+  test(`invalid event input stops before HTTP: ${args.join(' ')}`, () => {
+    const result = run(['list-events', ...args])
+    assert.equal(result.status, 1)
+    assert.equal(result.requests.length, 0)
+  })
+}
+
+test('event help exposes only cursor paging, without removed offset options', () => {
+  const result = run(['list-events', '--help'])
+  assert.equal(result.status, 0, result.stderr)
+  assert.equal(result.requests.length, 0)
+  for (const option of ['--limit', '--cursor', '--sort', '--as-of']) assert.ok(result.stdout.includes(option), option)
+  assert.doesNotMatch(result.stdout, /--(?:take|skip)\b/)
+})
 
 test('creator validates a session and selects only public column fields', () => {
   const result = run(['validate-session', '--session', 'test-session'], {
