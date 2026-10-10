@@ -17,6 +17,8 @@ export async function request<T>(
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    "PA-Content-Format": "markdown",
+    "User-Agent": "panews-cli/0.2.1",
   };
   if (lang) headers["PA-Accept-Language"] = lang;
   if (session) headers["PA-User-Session"] = session;

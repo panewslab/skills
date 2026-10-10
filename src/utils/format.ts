@@ -1,16 +1,3 @@
-import TurndownService from 'turndown'
-
-const turndown = new TurndownService({
-  headingStyle: 'atx',
-  bulletListMarker: '-',
-  codeBlockStyle: 'fenced',
-})
-
-// Convert HTML string to Markdown
-export function htmlToMarkdown(html: string): string {
-  return turndown.turndown(html)
-}
-
 // Pick only specified fields from an object
 export function select<T extends object>(
   obj: T,

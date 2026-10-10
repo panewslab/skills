@@ -1,7 +1,6 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
 import { readFileSync } from 'node:fs'
-import { init, renderToHtml } from 'md4x/standalone'
 import { request } from '../../utils/http.ts'
 import { resolveSession } from '../../utils/session.ts'
 import { toMarkdown } from '../../utils/format.ts'
@@ -40,9 +39,8 @@ export const updateArticleCommand = defineCommand({
     if (args.title) body.title = args.title
     if (args.desc) body.desc = args.desc
     if (args['content-file']) {
-      const markdown = readFileSync(args['content-file'], 'utf-8')
-      await init()
-      body.content = renderToHtml(markdown)
+      body.content = z.string().refine((value) => value.trim().length > 0, 'Content file must not be empty')
+        .parse(readFileSync(args['content-file'], 'utf-8'))
     }
     if (args.cover) body.cover = args.cover
     if (args.tags) body.tags = args.tags.split(',').map((t) => t.trim()).filter(Boolean)
@@ -52,6 +50,7 @@ export const updateArticleCommand = defineCommand({
       console.error(JSON.stringify({ error: 'No fields were provided to update.' }))
       process.exit(1)
     }
+    body.status ??= 'DRAFT'
 
     const article = await request<UpdatedArticle>(
       `/columns/${args['column-id']}/articles/${args['article-id']}`,

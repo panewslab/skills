@@ -1,7 +1,7 @@
 import { defineCommand } from 'citty'
 import { request } from '../utils/http.ts'
 import { resolveLang } from '../utils/lang.ts'
-import { htmlToMarkdown, toMarkdown } from '../utils/format.ts'
+import { toMarkdown } from '../utils/format.ts'
 
 interface Author {
   profile?: { name?: string }
@@ -13,6 +13,7 @@ interface Article {
   title: string
   desc: string | null
   content: string
+  translations?: Array<{ lang: string; title?: string; desc?: string | null; content?: string }>
   publishedAt: string
   author?: Author | null
   tags?: Array<{ tagId: string; tag: { name: string } }>
@@ -39,25 +40,26 @@ export const getArticleCommand = defineCommand({
     const lang = resolveLang(args.lang)
 
     const article = await request<Article>(`/articles/${args.id}`, { lang })
+    const translation = article.translations?.find((item) => item.lang === lang)
 
     const authorName = article.author?.profile?.name ?? null
     const tagNames = article.tags?.map((t) => t.tag?.name).filter(Boolean) ?? []
 
     const meta: Record<string, unknown> = {
-      title: article.title,
-      desc: article.desc,
+      title: translation?.title ?? article.title,
+      desc: translation?.desc ?? article.desc,
       publishedAt: article.publishedAt,
       ...(authorName ? { author: authorName } : {}),
       ...(tagNames.length > 0 ? { tags: tagNames } : {}),
     }
-    const content = article.content ?? ''
+    const content = translation?.content ?? article.content ?? ''
 
     const output = [
       toMarkdown(meta),
       '',
       '---',
       '',
-      htmlToMarkdown(content),
+      content,
     ].join('\n')
 
     console.log(output)
