@@ -1,6 +1,6 @@
 import { defineCommand } from 'citty'
 import { z } from 'zod'
-import { request } from '../utils/http.ts'
+import { requestResponse } from '../utils/http.ts'
 import { resolveLang } from '../utils/lang.ts'
 import { toMarkdown } from '../utils/format.ts'
 
@@ -23,7 +23,8 @@ const EventCountrySchema = z.enum([
 interface EventTopic {
   topic: {
     id: string
-    translations: { lang: string; title: string }[]
+    label: string
+    translations: { lang: string; label: string | null }[]
   }
 }
 
@@ -69,10 +70,21 @@ export const listEventsCommand = defineCommand({
       type: 'string',
       description: 'Filter paid events: true | false',
     },
-    take: {
+    limit: {
       type: 'string',
-      description: 'Number of results (max 100)',
-      default: '15',
+      description: 'Results on one page (1-100; default 15)',
+    },
+    cursor: {
+      type: 'string',
+      description: 'Opaque nextCursor from the previous page; repeat its filters, sort and language',
+    },
+    sort: {
+      type: 'string',
+      description: 'status: ongoing, upcoming, then ended; omitted: newest start first',
+    },
+    'as-of': {
+      type: 'string',
+      description: 'Fixed status time, ISO 8601 with timezone; restored from cursor if omitted',
     },
     lang: {
       type: 'string',
@@ -81,20 +93,43 @@ export const listEventsCommand = defineCommand({
   },
   async run({ args }) {
     const lang = resolveLang(args.lang)
-    const take = z.coerce.number().int().min(1).max(100).parse(args.take || '15')
-    const params = new URLSearchParams({ take: String(take) })
+    if (args.take !== void 0 || args.skip !== void 0) {
+      throw new Error('--take and --skip are no longer supported by list-events; use --limit and --cursor')
+    }
+    const query = {
+      limit: z.coerce.number().int().min(1).max(100).parse(args.limit ?? '15'),
+      lang,
+      search: z.string().min(1).optional().parse(args.search),
+      category: EventCategorySchema.optional().parse(args.category),
+      country: EventCountrySchema.optional().parse(args.country),
+      online: z.enum(['true', 'false']).transform((value) => value === 'true').optional().parse(args.online),
+      paid: z.enum(['true', 'false']).transform((value) => value === 'true').optional().parse(args.paid),
+      sort: z.literal('status').optional().parse(args.sort),
+    }
+    const cursor = z.string().min(1).max(4096).optional().parse(args.cursor)
+    const asOf = z.iso.datetime({ offset: true }).transform((value) => new Date(value).toISOString())
+      .optional().parse(args['as-of'])
+    const params = new URLSearchParams({ limit: String(query.limit) })
+    for (const key of ['search', 'category', 'country', 'sort'] as const) {
+      if (query[key] !== undefined) params.set(key, query[key])
+    }
+    if (query.online !== undefined) params.set('isOnline', String(query.online))
+    if (query.paid !== undefined) params.set('isPaid', String(query.paid))
+    if (cursor !== undefined) params.set('cursor', cursor)
+    if (asOf !== undefined) params.set('asOf', asOf)
 
-    if (args.search) params.set('search', args.search)
-    if (args.category) params.set('category', EventCategorySchema.parse(args.category))
-    if (args.country) params.set('country', EventCountrySchema.parse(args.country))
-    if (args.online !== undefined) params.set('isOnline', args.online)
-    if (args.paid !== undefined) params.set('isPaid', args.paid)
-
-    const data = await request<Event[]>(`/events?${params}`, { lang })
+    const response = await requestResponse(`/events?${params}`, { lang, throwOnError: true })
+      .catch((error: unknown) => {
+        if (error instanceof Error && error.message === 'HTTP 400') {
+          throw new Error('HTTP 400: Invalid event query or cursor. Check the filters, then restart without --cursor or --as-of.')
+        }
+        throw error
+      })
+    const data = await response.json() as Event[]
 
     const items = data.map((e) => {
       const topicNames = e.topics
-        .map((t) => t.topic.translations[0]?.title)
+        .map(({ topic }) => topic.translations.find((translation) => translation.lang === lang)?.label ?? topic.label)
         .filter(Boolean)
 
       return {
@@ -113,6 +148,12 @@ export const listEventsCommand = defineCommand({
       }
     })
 
-    console.log(toMarkdown(items))
+    const nextCursor = response.headers.get('PA-Next-Cursor')
+    console.log(toMarkdown(items) || (nextCursor ? '_No visible results on this page_' : '_No results_'))
+    console.log('\n```json\n' + JSON.stringify({
+      nextCursor,
+      asOf: response.headers.get('PA-Events-As-Of'),
+      query,
+    }, null, 2) + '\n```')
   },
 })

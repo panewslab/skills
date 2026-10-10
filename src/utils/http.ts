@@ -7,18 +7,20 @@ export interface RequestOptions {
   session?: string;
   signal?: AbortSignal;
   throwOnError?: boolean;
+  method?: string;
+  body?: unknown;
 }
 
-export async function request<T>(
+export async function requestResponse(
   path: string,
-  options: RequestOptions & { method?: string; body?: unknown } = {},
-): Promise<T> {
+  options: RequestOptions = {},
+): Promise<Response> {
   const { lang, session, signal, method = "GET", body } = options;
 
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     "PA-Content-Format": "markdown",
-    "User-Agent": "panews-cli/0.2.1",
+    "User-Agent": "panews-cli/0.3.0",
   };
   if (lang) headers["PA-Accept-Language"] = lang;
   if (session) headers["PA-User-Session"] = session;
@@ -49,7 +51,14 @@ export async function request<T>(
     process.exit(1);
   }
 
-  if (res.status === 204) return null as T;
+  return res;
+}
 
+export async function request<T>(
+  path: string,
+  options: RequestOptions = {},
+): Promise<T> {
+  const res = await requestResponse(path, options);
+  if (res.status === 204) return null as T;
   return res.json() as Promise<T>;
 }

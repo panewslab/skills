@@ -9,7 +9,7 @@ description: >
   latest smart money boards, board highlights, and board comparisons.
 metadata:
   author: Seven Du
-  version: "2026.10.10"
+  version: "2026.10.11"
 ---
 
 This is the core PANews reading skill for users who want to follow cryptocurrency and blockchain news through PANews coverage and public Polymarket smart money leaderboard snapshots. Use it for market-moving headlines, project and token updates, rankings, deep dives, topics, columns, series, events, editorial picks, and structured leaderboard discovery.
@@ -58,6 +58,7 @@ It is best suited for structured news discovery, explanation, and leaderboard re
 - Be more specific for fragile tasks:
   - Article URL or ID provided: resolve the article directly instead of broadening into generic search.
   - Rankings, events, calendar items, and platform picks: use the most direct matching workflow instead of combining unrelated workflows first.
+  - Events: read one page at a time with `--limit` / `--cursor`; `list-events` rejects the removed `--take` / `--skip` options. The [events workflow](./references/workflow-events.md) explains status ordering and how to continue with the same filters and language when more results are needed. Other commands keep their documented parameters.
   - Weak or missing PANews coverage: say so directly rather than filling gaps with outside knowledge.
   - Polymarket smart money board tasks: use the dedicated leaderboard workflows instead of article search.
   - Board requests: stay grounded in returned leaderboard fields and highlights; do not infer unsupported market or trader behavior.
